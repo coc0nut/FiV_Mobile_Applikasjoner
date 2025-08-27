@@ -5,12 +5,20 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QMenu>
+#include <QAction>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
+
+    QAction *exitAction = new QAction(tr("&Exit"), this);
+    fileMenu->addAction(exitAction);
+    connect(exitAction, &QAction::triggered, this, &QWidget::close); 
     
     QWidget *central = new QWidget(this);
     QHBoxLayout *layout = new QHBoxLayout(central);
