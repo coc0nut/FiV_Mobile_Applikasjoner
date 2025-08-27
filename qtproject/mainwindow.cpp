@@ -1,10 +1,16 @@
 #include "mainwindow.h"
+#include "todo.h"
+#include "sidemenu.h"
+#include "maincontent.h"
 #include "./ui_mainwindow.h"
 
 #include <QWidget>
+#include <QStackedWidget>
+#include <QTreeWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QTextEdit>
 #include <QMenu>
 #include <QAction>
 
@@ -14,25 +20,43 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
+    // Top menu bar
+        QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
 
-    QAction *exitAction = new QAction(tr("&Exit"), this);
-    fileMenu->addAction(exitAction);
-    connect(exitAction, &QAction::triggered, this, &QWidget::close); 
+        QAction *exitAction = new QAction(tr("&Exit"), this);
+        fileMenu->addAction(exitAction);
+        connect(exitAction, &QAction::triggered, this, &QWidget::close); 
     
-    QWidget *central = new QWidget(this);
-    QHBoxLayout *layout = new QHBoxLayout(central);
+    // Main content
+        QWidget *central = new QWidget(this);
+        QHBoxLayout *mainLayout = new QHBoxLayout(central);
 
-    QPushButton *button1 = new QPushButton("Button 1", central);
-    QPushButton *button2 = new QPushButton("Button 2", central);
-    QPushButton *button3 = new QPushButton("Button 3", central);
+        // Side menu (left)
+        SideMenu *sideMenu = new SideMenu(central);
 
-    layout->addWidget(button1);
-    layout->addWidget(button2);
-    layout->addWidget(button3);
+        // Main content area
+        MainContent *mainContent = new MainContent(central);
 
-    central->setLayout(layout);
-    setCentralWidget(central);
+        // Connect tree selection to stacked widget
+        connect(sideMenu, &QTreeWidget::currentItemChanged, this, [mainContent, sideMenu](QTreeWidgetItem *current){
+            if (current == sideMenu->homeItem)
+                mainContent->setCurrentIndex(0);
+            else if (current == sideMenu->profileItem)
+                mainContent->setCurrentIndex(1);
+            else if (current == sideMenu->settingsItem || current->parent() == sideMenu->settingsItem)
+                mainContent->setCurrentIndex(2);
+            else if (current == sideMenu->todoItem)
+                mainContent->setCurrentIndex(3);
+        });
+
+        mainLayout->addWidget(sideMenu);
+        mainLayout->addWidget(mainContent, 1);
+
+        central->setLayout(mainLayout);
+        setCentralWidget(central);
+
+    // Status bar
+        statusBar()->showMessage("Ready");
 
 }
 
