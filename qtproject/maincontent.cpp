@@ -1,5 +1,5 @@
 #include "maincontent.h"
-#include "todo.h"
+#include "todopage.h"
 
 #include <QWidget>
 
@@ -9,7 +9,7 @@ MainContent::MainContent(QWidget *parent)
     m_homePage = new QWidget();
     m_profilePage = new QWidget();
     m_settingsPage = new QWidget();
-    m_todoPage = new Todo();
+    m_todoPage = new TodoPage();
 
     addWidget(m_homePage);
     addWidget(m_profilePage);

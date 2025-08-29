@@ -26,6 +26,7 @@ signals:
 
 private slots:
     void onLoginClicked();
+    void onNewAccountClicked();
 };
 
 #endif // LOGIN_H

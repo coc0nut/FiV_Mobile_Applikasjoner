@@ -38,6 +38,7 @@ Login::Login(Database *db, QWidget *parent) : QDialog{parent}, db(db) {
     connect(loginButton, &QPushButton::clicked, this, &Login::onLoginClicked);
 
     newAccountButton = new QPushButton("New Account");
+    connect(newAccountButton, &QPushButton::clicked, this, &Login::onNewAccountClicked);
 
     formLayout->addLayout(userLayout);
     formLayout->addLayout(passLayout);
@@ -68,5 +69,15 @@ void Login::onLoginClicked() {
         accept();
     } else {
         QMessageBox::warning(this, "Login Failed", "Invalid username or password.");
+    }
+}
+
+void Login::onNewAccountClicked() {
+    if (db->checkUserExists(username())) {
+        QMessageBox::warning(this, "Username exists", "Choose another username");
+    } else if (!db->checkUserCredentials(username(), password())) {
+        db->addUser(username(), password());
+    } else {
+        QMessageBox::warning(this, "Failed to create account", "User already exists.");
     }
 }

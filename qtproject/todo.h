@@ -1,20 +1,15 @@
 #ifndef TODO_H
 #define TODO_H
 
-#include <QWidget>
+#include <QObject>
 
-class QTextEdit;
-class QPushButton;
-
-class Todo : public QWidget
+class Todo : public QObject
 {
     Q_OBJECT
 public:
-    Todo(QWidget *parent = nullptr);
+    explicit Todo(QObject *parent = nullptr);
 
-private:
-    QTextEdit *todoTextEdit;
-    QPushButton *addButton, *updateButton, *deleteButton;
+signals:
 };
 
 #endif // TODO_H

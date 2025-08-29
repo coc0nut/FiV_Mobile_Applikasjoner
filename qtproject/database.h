@@ -16,7 +16,10 @@ public:
 
     bool createUsersTable();
     bool checkUserCredentials(QString const &username, QString const &password);
+    bool checkUserExists(QString const &username);
     bool addUser(QString const &username, QString const &password);
+
+    bool createTodosTable();
 
 private:
     QSqlDatabase db;
