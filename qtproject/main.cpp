@@ -1,13 +1,28 @@
 #include "mainwindow.h"
+#include "database.h"
+#include "login.h"
+
 
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
 
+    Database database;
+    database.open();
+    database.createUsersTable();
+    database.addUser("test", "test123");
 
-    return a.exec();
+    Login login(&database);
+    if (login.exec() == QDialog::Accepted) {
+        MainWindow w;
+        w.setWindowTitle("Note.io");
+        w.show();
+    
+    
+        return a.exec();
+    }
+
+    return 0;
 }

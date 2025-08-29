@@ -14,7 +14,7 @@ SideMenu::SideMenu(QWidget *parent) : QTreeWidget(parent) {
     );
 
     homeItem = new QTreeWidgetItem(this, QStringList("Home"));
+    todoItem = new QTreeWidgetItem(this, QStringList("Todo"));
     profileItem = new QTreeWidgetItem(this, QStringList("Profile"));
     settingsItem = new QTreeWidgetItem(this, QStringList("Settings"));
-    todoItem = new QTreeWidgetItem(this, QStringList("Todo"));
 }

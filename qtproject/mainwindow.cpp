@@ -32,12 +32,13 @@ MainWindow::MainWindow(QWidget *parent)
         QHBoxLayout *mainLayout = new QHBoxLayout(central);
 
         // Side menu (left)
-        SideMenu *sideMenu = new SideMenu(central);
+            SideMenu *sideMenu = new SideMenu(central);
 
         // Main content area
-        MainContent *mainContent = new MainContent(central);
+            MainContent *mainContent = new MainContent(central);
 
-        // Connect tree selection to stacked widget
+    // Connections
+        // Sidemenu to main content area
         connect(sideMenu, &QTreeWidget::currentItemChanged, this, [mainContent, sideMenu](QTreeWidgetItem *current){
             if (current == sideMenu->homeItem)
                 mainContent->setCurrentIndex(0);
@@ -48,6 +49,8 @@ MainWindow::MainWindow(QWidget *parent)
             else if (current == sideMenu->todoItem)
                 mainContent->setCurrentIndex(3);
         });
+
+    // Preparing
 
         mainLayout->addWidget(sideMenu);
         mainLayout->addWidget(mainContent, 1);
