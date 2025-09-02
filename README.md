@@ -7,6 +7,10 @@
 
 
 
+## Spørsmål til Henning
+
+1. Kan man bruke Q_PROPERTY i QWidgets?
+
 
 ### Planlegging:
 
@@ -28,11 +32,15 @@ Det skal også være en hoved side hvor gjøremålene vises med frist.
 
 1. Kryptere passord
 2. Rette på new account knapp.
-3. 
 
 ### Logg:
+- 01.09.25 Mandag:
+  Importere database oppføringene til de respektive klassene ved oppstart av programmet.
 
-- 29.08.25 Torsdag:
+- 31.08.25 Søndag:
+  Lage todo klasse og funksjonalitet
+
+- 29.08.25 Fredag:
   Opprette klasser for database tabeller
 
 - 27.08.25 Onsdag:

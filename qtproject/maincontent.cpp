@@ -1,15 +1,16 @@
 #include "maincontent.h"
 #include "todopage.h"
+#include "homepage.h"
 
 #include <QWidget>
 
-MainContent::MainContent(QWidget *parent)
-    : QStackedWidget{parent}
+MainContent::MainContent(Database *db, User *user, Todo *todo, QWidget *parent)
+    : QStackedWidget{parent}, db(db), user(user), todo(todo)
 {
-    m_homePage = new QWidget();
+    m_homePage = new HomePage(db, user);
     m_profilePage = new QWidget();
     m_settingsPage = new QWidget();
-    m_todoPage = new TodoPage();
+    m_todoPage = new TodoPage(db, user, todo);
 
     addWidget(m_homePage);
     addWidget(m_profilePage);

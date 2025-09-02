@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include "database.h"
+#include "user.h"
 
 class QLineEdit;
 class QPushButton;
@@ -11,7 +12,7 @@ class Login : public QDialog
 {
     Q_OBJECT
 public:
-    explicit Login(Database *db, QWidget *parent = nullptr);
+    explicit Login(Database *db, User *user, QWidget *parent = nullptr);
 
     QString const username();
     QString const password();
@@ -21,6 +22,7 @@ private:
     QLineEdit *passWordEdit;
     QPushButton *loginButton, *newAccountButton;
     Database *db;
+    User *user;
 
 signals:
 

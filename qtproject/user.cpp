@@ -1,5 +1,8 @@
 #include "user.h"
 
+QVector<User*> User::users;
+int User::id_count = 0;
+
 User::User(QObject *parent)
     : QObject{parent}
 {}
@@ -17,7 +20,25 @@ void User::setUsername(const QString &newUsername)
     emit usernameChanged();
 }
 
-void User::resetUsername()
+QString User::password() const
 {
-    setUsername({}); // TODO: Adapt to use your actual default value
+    return m_password;
+}
+
+void User::setPassword(QString const &newPassword) {
+    if (m_password == newPassword) {
+        return;
+    }
+    m_password = newPassword;
+    emit passwordChanged();
+}
+
+int User::id() const
+{
+    return m_id;
+}
+
+void User::setId(int newId)
+{
+    m_id = newId;
 }

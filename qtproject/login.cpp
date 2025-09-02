@@ -7,7 +7,8 @@
 #include <QPushButton>
 #include <QMessageBox>
 
-Login::Login(Database *db, QWidget *parent) : QDialog{parent}, db(db) {
+Login::Login(Database *db, User *user, QWidget *parent)
+    : QDialog{parent}, db(db), user(user) {
 
     setWindowTitle("Note.io");
     resize(640, 320);
@@ -77,6 +78,7 @@ void Login::onNewAccountClicked() {
         QMessageBox::warning(this, "Username exists", "Choose another username");
     } else if (!db->checkUserCredentials(username(), password())) {
         db->addUser(username(), password());
+        QMessageBox::information(this, "Account created", "Your account was successfully created. Please login.");
     } else {
         QMessageBox::warning(this, "Failed to create account", "User already exists.");
     }

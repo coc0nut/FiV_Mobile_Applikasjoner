@@ -2,6 +2,8 @@
 #define SIDEMENU_H
 
 #include <QTreeWidget>
+#include "todo.h"
+#include "user.h"
 
 class SideMenu : public QTreeWidget
 {
@@ -9,6 +11,9 @@ class SideMenu : public QTreeWidget
 public:
     explicit SideMenu(QWidget *parent = nullptr);
     QTreeWidgetItem *homeItem, *profileItem, *settingsItem, *todoItem;
+
+
+    void populateTodos(int user_id);
 
 private:
 };
