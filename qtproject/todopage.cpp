@@ -79,6 +79,7 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
     todoLayout->addWidget(todoTextEdit);
     todoLayout->addLayout(buttonLayout);
 
+    // addButton connection
     connect(addButton, &QPushButton::clicked, this, [this]() {
         QString completed, created_on, updated_on, due;
 
@@ -104,6 +105,15 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
             QMessageBox::information(this, "Todo added", "The todo record was successfully added");
         } else {
             QMessageBox::warning(this, "Failed to add todo", "The todo was not added...\nPlease try again.)");
+        }
+    });
+
+    // updateButton connection
+    connect(updateButton, &QPushButton::clicked, this, [this]() {
+        QString updated_on = QDateTime::currentDateTime().toString(Qt::ISODate);
+
+        if (this->todo) {
+
         }
     });
 

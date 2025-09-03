@@ -29,6 +29,7 @@ public:
         QString created_on, QString updated_on, QString due
     );
     bool importTodos();
+    bool updateTodo(Todo *todo);
 
 private:
     QSqlDatabase db;

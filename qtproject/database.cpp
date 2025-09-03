@@ -192,3 +192,8 @@
 
         return true;
     }
+
+    bool Database::updateTodo(Todo *todo)
+    {
+
+    }
