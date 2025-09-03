@@ -34,6 +34,9 @@ Det skal også være en hoved side hvor gjøremålene vises med frist.
 2. Rette på new account knapp.
 
 ### Logg:
+- 03.09.25 Onsdag:
+  Satte opp logikk for knappene i TodoPage og begynte å ordne Home layout.
+
 - 01.09.25 Mandag:
   Importere database oppføringene til de respektive klassene ved oppstart av programmet.
 

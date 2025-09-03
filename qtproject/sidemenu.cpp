@@ -1,5 +1,5 @@
 #include "sidemenu.h"
-
+#include "todo.h"
 
 SideMenu::SideMenu(QWidget *parent) : QTreeWidget(parent) {
     setHeaderHidden(true);
@@ -20,6 +20,7 @@ SideMenu::SideMenu(QWidget *parent) : QTreeWidget(parent) {
 }
 
 void SideMenu::populateTodos(int user_id) {
+    currentUserId = user_id;
     todoItem->takeChildren();
 
     for (Todo* todo: Todo::todos) {
@@ -29,4 +30,10 @@ void SideMenu::populateTodos(int user_id) {
         }
     }
     todoItem->setExpanded(true);
+}
+
+void SideMenu::refreshTodos() {
+    if (currentUserId != -1) {
+        populateTodos(currentUserId);
+    }
 }

@@ -2,8 +2,7 @@
 #define SIDEMENU_H
 
 #include <QTreeWidget>
-#include "todo.h"
-#include "user.h"
+
 
 class SideMenu : public QTreeWidget
 {
@@ -15,7 +14,11 @@ public:
 
     void populateTodos(int user_id);
 
+public slots:
+    void refreshTodos();
+
 private:
+    int currentUserId = -1;
 };
 
 #endif // SIDEMENU_H

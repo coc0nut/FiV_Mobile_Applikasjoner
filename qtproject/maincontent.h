@@ -14,6 +14,9 @@ public:
 
     QWidget *homePage(), *profilePage(), *settingsPage(), *todoPage();
 
+signals:
+    void todosChanged();
+
 private:
     QWidget *m_homePage, *m_profilePage, *m_settingsPage, *m_todoPage;
     Database *db;

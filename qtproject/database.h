@@ -24,12 +24,13 @@ public:
     bool importUsers();
 
     bool createTodosTable();
-    bool addTodo(
+    int addTodo(
         int user_id, int completed, QString title, QString text,
         QString created_on, QString updated_on, QString due
     );
     bool importTodos();
     bool updateTodo(Todo *todo);
+    bool deleteTodo(Todo *todo);
 
 private:
     QSqlDatabase db;

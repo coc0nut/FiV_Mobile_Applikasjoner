@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
     database.importUsers();
 
     for (auto &u : User::users) {
+        User::user_count++;
         qInfo() << u->id() <<  u->username() << u->password();
     }
 
@@ -29,6 +30,7 @@ int main(int argc, char *argv[])
     database.importTodos();
 
     for (auto &t : Todo::todos) {
+        Todo::todo_count++;
         qInfo() << t->id() << t->user_id() << t->title() << t->text() << t->completed() << t->created_on() << t->updated_on() << t->due();
     }
 

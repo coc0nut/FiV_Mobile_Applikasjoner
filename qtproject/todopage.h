@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QLineEdit>
+#include <QCheckBox>
 #include "database.h"
 #include "todo.h"
 #include "user.h"
@@ -19,6 +20,10 @@ public:
 
     void setTodo(Todo *todo);
 
+
+signals:
+    void todosChanged();
+
 private:
     Database *db;
     User *user;
@@ -30,7 +35,8 @@ private:
     QLabel *completed_on;
     QTextEdit *todoTextEdit;
     QDateTimeEdit *dueEdit;
-    QPushButton *addButton, *updateButton, *deleteButton, *completeButton;
+    QPushButton *addButton, *updateButton, *deleteButton;
+    QCheckBox *completedCheckBox;
 };
 
 #endif // TODOPAGE_H

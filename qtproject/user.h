@@ -21,7 +21,7 @@ public:
     void setId(int newId);
 
     static QVector<User*> users;
-    static int id_count;
+    static int user_count;
 
 signals:
 

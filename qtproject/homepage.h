@@ -25,6 +25,12 @@ private:
     QLabel *id;
     QLabel *bilde;
 
+    QLabel *title;
+    QLabel *text;
+    QLabel *created_on;
+    QLabel *updated_on;
+    QLabel *due;
+
 };
 
 

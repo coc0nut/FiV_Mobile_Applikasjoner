@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include <QDateTime>
 #include <QMessageBox>
+#include "sidemenu.h"
 
 TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
     : QWidget(parent), db(db), user(user), todo(todo) {
@@ -45,13 +46,24 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
     todoLayout->addWidget(due);
     todoLayout->addWidget(dueEdit);
 
+    // Completed checkbox
+
+    completedCheckBox = new QCheckBox("Completed", this);
+    todoLayout->addWidget(completedCheckBox);
+
+    connect(completedCheckBox, &QCheckBox::toggled, this, [this](bool checked) {
+        if (this->todo) {
+            this->todo->setCompleted(checked ? 1 : 0);
+        }
+    });
+
 
     // Memo / text
     todoTextEdit = new QTextEdit(this);
 
     todoTextEdit->setStyleSheet(
         "QTextEdit {"
-        "  border-radius: 12px;"
+        "  border-radius: 8px;"
         "  border: 1px solid #cccccc;"
         "  padding: 4px;"
         "}"
@@ -69,12 +81,10 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
     addButton = new QPushButton("Add", this);
     updateButton = new QPushButton("Update", this);
     deleteButton = new QPushButton("Delete", this);
-    completeButton = new QPushButton("Complete", this);
 
     buttonLayout->addWidget(addButton);
     buttonLayout->addWidget(updateButton);
     buttonLayout->addWidget(deleteButton);
-    buttonLayout->addWidget(completeButton);
 
     todoLayout->addWidget(todoTextEdit);
     todoLayout->addLayout(buttonLayout);
@@ -89,7 +99,7 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
 
         if (this->todo) {
             try {
-                this->db->addTodo(
+                int newId = this->db->addTodo(
                     this->user->id(),
                     this->todo->completed(),
                     this->todo->title(),
@@ -98,11 +108,29 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
                     updated_on,
                     due
                 );
+
+                if (newId != -1) {
+
+                    Todo* newTodo = new Todo(this->db);
+                    newTodo->setId(newId);
+                    newTodo->setUser_id(this->user->id());
+                    newTodo->setCompleted(this->todo->completed());
+                    newTodo->setTitle(this->todo->title());
+                    newTodo->setText(this->todo->text());
+                    newTodo->setCreated_on(this->todo->created_on());
+                    newTodo->setUpdated_on(this->todo->updated_on());
+                    newTodo->setDue(this->todo->due());
+
+                    Todo::todos.push_back(newTodo);
+
+                }
             } catch (std::exception const &e) {
                 QMessageBox::warning(this, "Failed to add todo", QString("The todo was not added...\nPlease try again.\nError: %1").arg(e.what()));
             }
 
             QMessageBox::information(this, "Todo added", "The todo record was successfully added");
+            emit todosChanged();
+
         } else {
             QMessageBox::warning(this, "Failed to add todo", "The todo was not added...\nPlease try again.)");
         }
@@ -110,10 +138,41 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
 
     // updateButton connection
     connect(updateButton, &QPushButton::clicked, this, [this]() {
-        QString updated_on = QDateTime::currentDateTime().toString(Qt::ISODate);
+        if (!this->todo) return;
 
-        if (this->todo) {
+        this->todo->setTitle(todoTitleEdit->text());
+        this->todo->setText(todoTextEdit->toPlainText());
+        this->todo->setDue(dueEdit->dateTime().toString(Qt::ISODate));
+        this->todo->setUpdated_on(QDateTime::currentDateTime().toString(Qt::ISODate));
+        
+        if (this->db->updateTodo(this->todo)) {
+            updated_on->setText("Updated on: " + this->todo->updated_on());
+            QMessageBox::information(this, "Updated", "Todo updated successfully.");
+            emit todosChanged();
+        } else {
+            QMessageBox::warning(this, "Error", "Failed to update todo.");
+        }
+    });
 
+    // deleteButton connection
+    connect(deleteButton, &QPushButton::clicked, this, [this]() {
+        if (!this->todo) return;
+
+        if (this->db->deleteTodo(this->todo)) {
+
+            QMessageBox::information(this, "Deleted", "Todo was successfully deleted.");
+            try {
+                auto it = std::find(Todo::todos.begin(), Todo::todos.end(), this->todo);
+                if (it != Todo::todos.end()) {
+                    Todo::todos.erase(it);
+                }
+            } catch (std::exception const &e) {
+                qDebug() << "Error:" << e.what();
+            }
+
+            emit todosChanged();
+        } else {
+            QMessageBox::warning(this, "Error", "Failed to delete todo.");
         }
     });
 
@@ -121,10 +180,13 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
 
 void TodoPage::setTodo(Todo* todo) {
     if (!todo) return;
+
     this->todo = todo;
+
     todoTitleEdit->setText(todo->title());
     created_on->setText("Created on: " + todo->created_on());
     updated_on->setText("Updated on: " + todo->updated_on());
     dueEdit->setDateTime(QDateTime::fromString(todo->due(), Qt::ISODate));
     todoTextEdit->setPlainText(todo->text());
+    completedCheckBox->setChecked(todo->completed() != 0);
 }

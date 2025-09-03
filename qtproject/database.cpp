@@ -141,7 +141,7 @@
         );
     }
 
-    bool Database::addTodo(int user_id, int completed, QString title, QString text,
+    int Database::addTodo(int user_id, int completed, QString title, QString text,
                            QString created_on, QString updated_on, QString due) {
         QSqlQuery query;
 
@@ -157,7 +157,18 @@
         query.addBindValue(updated_on);
         query.addBindValue(due);
 
-        return query.exec();
+        if (!query.exec()) {
+            qDebug() << "failed to add todo:" << query.lastError().text();
+            return -1;
+        }
+
+        QSqlQuery idQuery("SELECT last_insert_rowid()");
+        if (idQuery.next()) {
+            return idQuery.value(0).toInt();
+        }
+
+
+        return -1;
     }
 
     bool Database::importTodos()
@@ -195,5 +206,52 @@
 
     bool Database::updateTodo(Todo *todo)
     {
+        if (!todo) return false;
 
+        QSqlQuery query;
+
+        query.prepare(
+            "update todos set "
+            "title = ?, "
+            "text = ?, "
+            "completed = ?, "
+            "updated_on = ?, "
+            "due = ? "
+            "where id = ?"
+        );
+        query.addBindValue(todo->title());
+        query.addBindValue(todo->text());
+        query.addBindValue(todo->completed());
+        query.addBindValue(todo->updated_on());
+        query.addBindValue(todo->due());
+        query.addBindValue(todo->id());
+
+        if (!query.exec()) {
+            qDebug() << "Failed to update todo: " << query.lastError().text();
+            return false;
+        }
+
+        return true;
+    }
+
+    bool Database::deleteTodo(Todo *todo)
+    {
+        if (!todo) return false;
+
+        qDebug() << "Attempting to delete todo with id:" << todo->id();
+
+        QSqlQuery query;
+
+        query.prepare(
+            "delete from todos where id = ?"
+        );
+
+        query.addBindValue(todo->id());
+
+        if (!query.exec()) {
+            qDebug() << "Failed to delete todo:" << query.lastError().text();
+            return false;
+        }
+        qDebug() << "Delete query executed, affected rows:" << query.numRowsAffected();
+        return true;
     }

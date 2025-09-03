@@ -72,6 +72,11 @@ MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
             }
         });
 
+        connect(mainContent, &MainContent::todosChanged, sideMenu, &SideMenu::refreshTodos);
+
+
+
+
     // Preparing
 
         mainLayout->addWidget(sideMenu);

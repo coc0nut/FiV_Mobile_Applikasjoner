@@ -16,6 +16,9 @@ MainContent::MainContent(Database *db, User *user, Todo *todo, QWidget *parent)
     addWidget(m_profilePage);
     addWidget(m_settingsPage);
     addWidget(m_todoPage);
+
+    // forward signal todo change signal maincontent -> mainwindow
+    connect(m_todoPage, SIGNAL(todosChanged()), this, SIGNAL(todosChanged()));
 }
 
 QWidget* MainContent::homePage() { return m_homePage; }

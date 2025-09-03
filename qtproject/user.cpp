@@ -1,7 +1,7 @@
 #include "user.h"
 
 QVector<User*> User::users;
-int User::id_count = 0;
+int User::user_count = 0;
 
 User::User(QObject *parent)
     : QObject{parent}
