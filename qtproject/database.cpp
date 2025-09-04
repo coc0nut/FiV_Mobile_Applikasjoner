@@ -48,7 +48,10 @@
             "create table if not exists users ("
             "id integer primary key autoincrement, "
             "username text unique, "
-            "password text)"
+            "password text, "
+            "name text, "
+            "email text, "
+            ")"
         );
     }
 

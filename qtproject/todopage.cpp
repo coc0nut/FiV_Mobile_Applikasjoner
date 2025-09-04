@@ -98,6 +98,11 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
         due = dueEdit->dateTime().toString(Qt::ISODate);
 
         if (this->todo) {
+
+            this->todo->setCreated_on(created_on);
+            this->todo->setUpdated_on(updated_on);
+            this->todo->setDue(due);
+            
             try {
                 int newId = this->db->addTodo(
                     this->user->id(),
@@ -110,7 +115,6 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
                 );
 
                 if (newId != -1) {
-
                     Todo* newTodo = new Todo(this->db);
                     newTodo->setId(newId);
                     newTodo->setUser_id(this->user->id());

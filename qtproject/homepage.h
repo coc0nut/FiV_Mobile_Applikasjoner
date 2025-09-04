@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QLabel>
+#include <QVBoxLayout>
 
 #include "database.h"
 #include "user.h"
@@ -13,6 +14,9 @@ class HomePage : public QWidget {
 public:
     explicit HomePage(Database *db, User *user, QWidget *parent = nullptr);
 
+public slots:
+    void refreshTodos();
+
 signals:
 
 
@@ -20,9 +24,9 @@ private:
 
     Database *db;
     User *user;
-    QLabel *username;
-    QLabel *password;
-    QLabel *id;
+    QLabel *userDetails;
+    QLabel *name;
+    QLabel *email;
     QLabel *bilde;
 
     QLabel *title;
@@ -30,6 +34,10 @@ private:
     QLabel *created_on;
     QLabel *updated_on;
     QLabel *due;
+
+    QWidget *contentWidget;
+    QVBoxLayout *homePageLayout;
+    QVBoxLayout *todoLayout;
 
 };
 

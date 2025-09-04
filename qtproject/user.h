@@ -23,6 +23,12 @@ public:
     static QVector<User*> users;
     static int user_count;
 
+    QString name() const;
+    void setName(const QString &newName);
+
+    QString email() const;
+    void setEmail(const QString &newEmail);
+
 signals:
 
     void usernameChanged();
@@ -30,7 +36,7 @@ signals:
 
 private:
     int m_id;
-    QString m_username, m_password;
+    QString m_username, m_password, m_name, m_email;
     Q_PROPERTY(QString username READ username WRITE setUsername NOTIFY usernameChanged FINAL)
     Q_PROPERTY(QString password READ password CONSTANT FINAL)
 };

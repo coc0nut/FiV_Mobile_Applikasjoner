@@ -42,3 +42,23 @@ void User::setId(int newId)
 {
     m_id = newId;
 }
+
+QString User::name() const
+{
+    return m_name;
+}
+
+void User::setName(const QString &newName)
+{
+    m_name = newName;
+}
+
+QString User::email() const
+{
+    return m_email;
+}
+
+void User::setEmail(const QString &newEmail)
+{
+    m_email = newEmail;
+}

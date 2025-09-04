@@ -7,16 +7,17 @@ SideMenu::SideMenu(QWidget *parent) : QTreeWidget(parent) {
     setStyleSheet(
         "QTreeWidget {"
         " border-radius: 12px;"
-        " border: 1px solid #cccccc;"
-        " background: #f8f8f8;"
+        " background: #d3d6db;"
+        " color: #000000;"
         " padding: 10px;"
         "}"
     );
 
-    profileItem = new QTreeWidgetItem(this, QStringList("Profile"));
+
     homeItem = new QTreeWidgetItem(this, QStringList("Home"));
     todoItem = new QTreeWidgetItem(this, QStringList("Todo"));
     settingsItem = new QTreeWidgetItem(this, QStringList("Settings"));
+    profileItem = new QTreeWidgetItem(this, QStringList("Profile"));
 }
 
 void SideMenu::populateTodos(int user_id) {

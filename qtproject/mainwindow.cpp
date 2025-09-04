@@ -2,6 +2,7 @@
 #include "sidemenu.h"
 #include "maincontent.h"
 #include "todopage.h"
+#include "homepage.h"
 #include "./ui_mainwindow.h"
 
 #include <QWidget>
@@ -13,12 +14,16 @@
 #include <QTextEdit>
 #include <QMenu>
 #include <QAction>
+#include <QPalette>
 
 MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
     : QMainWindow(parent), db(db), user(user), todo(todo), ui(new Ui::MainWindow) {
 
     ui->setupUi(this);
     newTodo = new Todo(this);
+
+    QString bgColor = "#394359";
+    QString textColor = "#f95959";
 
     // Top menu bar
         QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
@@ -27,8 +32,34 @@ MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
         fileMenu->addAction(exitAction);
         connect(exitAction, &QAction::triggered, this, &QWidget::close);
 
+        fileMenu->setStyleSheet(
+            QString(
+                "background: %1;"
+                "color: %2;"
+                ).arg(bgColor).arg(textColor)
+
+        );
+
+        menuBar()->setStyleSheet(
+            QString(
+                "background: %1;"
+                "color: %2;"
+                ).arg(bgColor).arg(textColor)
+        );
+
     // Main content
         QWidget *central = new QWidget(this);
+
+
+        central->setStyleSheet(
+            QString(
+                "background: %1;"
+                "color: %2;"
+            ).arg(bgColor).arg(textColor)
+
+
+        );
+
         QHBoxLayout *mainLayout = new QHBoxLayout(central);
 
         // Side menu (left)
@@ -74,6 +105,17 @@ MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
 
         connect(mainContent, &MainContent::todosChanged, sideMenu, &SideMenu::refreshTodos);
 
+        
+        auto todoPageWidget = mainContent->todoPage();
+        auto todoPage = qobject_cast<TodoPage*>(todoPageWidget);
+
+        auto homePageWidget = mainContent->homePage();
+        auto homePage = qobject_cast<HomePage*>(homePageWidget);
+
+        if (todoPage && homePage) {
+            connect(todoPage, &TodoPage::todosChanged, homePage, &HomePage::refreshTodos);
+}
+
 
 
 
@@ -87,6 +129,12 @@ MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
 
     // Status bar
         statusBar()->showMessage("Ready");
+        statusBar()->setStyleSheet(
+            QString(
+                "background: %1;"
+                "color: %2;"
+                ).arg(bgColor).arg(textColor)
+        );
 
 }
 
