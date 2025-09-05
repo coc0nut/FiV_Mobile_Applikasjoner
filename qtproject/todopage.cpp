@@ -7,7 +7,6 @@
 #include <QPushButton>
 #include <QDateTime>
 #include <QMessageBox>
-#include "sidemenu.h"
 
 TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
     : QWidget(parent), db(db), user(user), todo(todo) {

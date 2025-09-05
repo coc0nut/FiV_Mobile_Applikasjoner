@@ -38,6 +38,11 @@
         }
     }
 
+    QString Database::hashPassword(QString const &password) {
+        QByteArray hash = QCryptographicHash::hash(password.toUtf8(), QCryptographicHash::Sha256);
+        return QString(hash.toHex());
+    }
+
 // Users
 
     bool Database::createUsersTable() {
@@ -50,18 +55,18 @@
             "username text unique, "
             "password text, "
             "name text, "
-            "email text, "
+            "email text "
             ")"
         );
     }
 
     bool Database::checkUserCredentials(QString const &username, QString const &password) {
-
+        QString hashedPassword = hashPassword(password);
         QSqlQuery query;
 
         query.prepare("SELECT id, username, password FROM users WHERE username = ? AND password = ?");
         query.addBindValue(username);
-        query.addBindValue(password);
+        query.addBindValue(hashedPassword);
 
         if (query.exec() && query.next()) {
             user->setId(query.value(0).toInt());
@@ -88,12 +93,12 @@
     }
 
     bool Database::addUser(QString const &username, QString const &password) {
-
+        QString hashedPassword = hashPassword(password);
         QSqlQuery query;
 
         query.prepare("INSERT INTO users (username, password) VALUES (?, ?)");
         query.addBindValue(username);
-        query.addBindValue(password);
+        query.addBindValue(hashedPassword);
 
         return query.exec();
     }

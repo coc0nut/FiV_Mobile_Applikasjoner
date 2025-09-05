@@ -34,6 +34,9 @@ Det skal også være en hoved side hvor gjøremålene vises med frist.
 2. Rette på new account knapp.
 
 ### Logg:
+- 04.09.25 Torsdag:
+  Satte opp kryptering av passord, slik at passord ikke lagres i klartekst.
+
 - 03.09.25 Onsdag:
   Satte opp logikk for knappene i TodoPage og begynte å ordne Home layout.
 

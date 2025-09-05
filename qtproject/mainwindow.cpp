@@ -74,10 +74,17 @@ MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
         connect(sideMenu, &QTreeWidget::currentItemChanged, this, [this, sideMenu, mainContent](QTreeWidgetItem *current) {
             if (current == sideMenu->homeItem)
                 mainContent->setCurrentIndex(0);
-            else if (current == sideMenu->profileItem)
+            // Profile page
+            else if (current == sideMenu->profileItem) {
                 mainContent->setCurrentIndex(1);
-            else if (current == sideMenu->settingsItem || current->parent() == sideMenu->settingsItem)
+
+
+            }
+            // Settings Page
+            else if (current == sideMenu->settingsItem || current->parent() == sideMenu->settingsItem) {
                 mainContent->setCurrentIndex(2);
+            }
+            // TodoPage
             else if (current == sideMenu->todoItem) {
                 mainContent->setCurrentIndex(3);
 

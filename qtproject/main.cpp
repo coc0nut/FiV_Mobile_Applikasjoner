@@ -17,7 +17,6 @@ int main(int argc, char *argv[])
     Database database(&user, &todo);
     database.open();
     database.createUsersTable();
-    database.addUser("test", "test123");
 
     database.importUsers();
 

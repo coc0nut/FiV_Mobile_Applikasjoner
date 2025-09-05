@@ -1,6 +1,7 @@
 #include "maincontent.h"
 #include "todopage.h"
 #include "homepage.h"
+#include "profilepage.h"
 
 #include <QWidget>
 
@@ -8,7 +9,7 @@ MainContent::MainContent(Database *db, User *user, Todo *todo, QWidget *parent)
     : QStackedWidget{parent}, db(db), user(user), todo(todo)
 {
     m_homePage = new HomePage(db, user);
-    m_profilePage = new QWidget();
+    m_profilePage = new ProfilePage(db, user);
     m_settingsPage = new QWidget();
     m_todoPage = new TodoPage(db, user, todo);
 

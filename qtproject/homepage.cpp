@@ -34,8 +34,6 @@ HomePage::HomePage(Database *db, User *user, QWidget *parent) : QWidget{parent},
         ));
 
         userDetails = new QLabel("Username: " + user->username() + "\nName: " + user->name() + "\nEmail: " + user->email(), contentWidget);
-        // name = new QLabel("Name: Harald Trohne", contentWidget);
-        // email = new QLabel("Email: harald.trohne@gmail.com", contentWidget);
 
 
 

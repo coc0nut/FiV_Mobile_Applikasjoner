@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QSqlDatabase>
+#include <QCryptographicHash>
 
 #include "user.h"
 #include "todo.h"
@@ -16,6 +17,8 @@ public:
 
     bool open(QString const &dbName = "qtproject.db");
     void close();
+
+    QString hashPassword(QString const &password);
 
     bool createUsersTable();
     bool checkUserCredentials(QString const &username, QString const &password);

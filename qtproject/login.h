@@ -17,6 +17,7 @@ public:
     QString const username();
     QString const password();
 
+
 private:
     QLineEdit *userNameEdit;
     QLineEdit *passWordEdit;

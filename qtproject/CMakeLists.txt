@@ -10,6 +10,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets Core Sql)
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
     main.cpp
@@ -32,9 +33,11 @@ qt_add_executable(qtproject
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
     ${PROJECT_RESOURCES}
+    profilepage.h profilepage.cpp
 )
 
 target_link_libraries(qtproject PRIVATE Qt6::Widgets Qt6::Core Qt6::Sql)
+target_link_libraries(qtproject PRIVATE Qt6::Widgets)
 
 set_target_properties(qtproject PROPERTIES
     MACOSX_BUNDLE TRUE
