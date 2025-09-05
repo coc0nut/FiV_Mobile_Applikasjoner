@@ -206,9 +206,12 @@ void HomePage::refreshTodos() {
             QLabel *due = new QLabel("Due: " + dueStr, contentWidget);
             due->setStyleSheet("font-weight: bold; color: #888; font-size: 15px;");
 
+            editButton = new QPushButton("Edit", this);
+
             todoItemLayout->addWidget(due);
             todoItemLayout->addWidget(title);
             todoItemLayout->addWidget(text);
+            todoItemLayout->addWidget(editButton);
             todoItemLayout->addWidget(created_on);
 
             QHBoxLayout *rowLayout = new QHBoxLayout();

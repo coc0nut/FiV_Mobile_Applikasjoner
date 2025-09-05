@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QLabel>
+#include <QPushButton>
 #include <QVBoxLayout>
 
 #include "database.h"
@@ -34,6 +35,8 @@ private:
     QLabel *created_on;
     QLabel *updated_on;
     QLabel *due;
+
+    QPushButton *editButton;
 
     QWidget *contentWidget;
     QVBoxLayout *homePageLayout;
