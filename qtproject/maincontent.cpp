@@ -5,8 +5,8 @@
 
 #include <QWidget>
 
-MainContent::MainContent(Database *db, User *user, Todo *todo, QWidget *parent)
-    : QStackedWidget{parent}, db(db), user(user), todo(todo)
+MainContent::MainContent(Database *db, User *user, Todo *todo, SideMenu *sideMenu, QWidget *parent)
+    : QStackedWidget{parent}, db(db), user(user), todo(todo), sideMenu(sideMenu)
 {
     m_homePage = new HomePage(db, user);
     m_profilePage = new ProfilePage(db, user);
@@ -26,3 +26,22 @@ QWidget* MainContent::homePage() { return m_homePage; }
 QWidget* MainContent::profilePage() { return m_profilePage; }
 QWidget* MainContent::settingsPage() { return m_settingsPage; }
 QWidget* MainContent::todoPage() { return m_todoPage; }
+
+void MainContent::showTodoPage(int todoId)
+{
+    Todo* todoToEdit = nullptr;
+
+    for (Todo* t: Todo::todos) {
+        if (t->id() == todoId) {
+            todoToEdit = t;
+            sideMenu->setCurrentItemByName(t->title());
+            break;
+        }
+    }
+
+    if (todoToEdit) {
+        static_cast<TodoPage*>(m_todoPage)->setTodo(todoToEdit);
+    }
+
+    setCurrentWidget(m_todoPage);
+}

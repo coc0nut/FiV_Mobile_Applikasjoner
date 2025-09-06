@@ -101,7 +101,7 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
             this->todo->setCreated_on(created_on);
             this->todo->setUpdated_on(updated_on);
             this->todo->setDue(due);
-            
+
             try {
                 int newId = this->db->addTodo(
                     this->user->id(),

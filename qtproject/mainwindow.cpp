@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "sidemenu.h"
+
 #include "maincontent.h"
 #include "todopage.h"
 #include "homepage.h"
@@ -22,8 +22,6 @@ MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
     ui->setupUi(this);
     newTodo = new Todo(this);
 
-    QString bgColor = "#394359";
-    QString textColor = "#f95959";
 
     // Top menu bar
         QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
@@ -63,29 +61,29 @@ MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
         QHBoxLayout *mainLayout = new QHBoxLayout(central);
 
         // Side menu (left)
-            SideMenu *sideMenu = new SideMenu(central);
+            sideMenu = new SideMenu(central);
             sideMenu->populateTodos(user->id());
 
         // Main content area
-            MainContent *mainContent = new MainContent(db, user, todo, central);
+            MainContent *mainContent = new MainContent(db, user, todo, sideMenu, central);
 
     // Connections
         // Sidemenu to main content area
-        connect(sideMenu, &QTreeWidget::currentItemChanged, this, [this, sideMenu, mainContent](QTreeWidgetItem *current) {
-            if (current == sideMenu->homeItem)
+        connect(sideMenu, &QTreeWidget::currentItemChanged, this, [this, mainContent](QTreeWidgetItem *current) {
+            if (current == this->sideMenu->homeItem)
                 mainContent->setCurrentIndex(0);
             // Profile page
-            else if (current == sideMenu->profileItem) {
+            else if (current == this->sideMenu->profileItem) {
                 mainContent->setCurrentIndex(1);
 
 
             }
             // Settings Page
-            else if (current == sideMenu->settingsItem || current->parent() == sideMenu->settingsItem) {
+            else if (current == this->sideMenu->settingsItem || current->parent() == this->sideMenu->settingsItem) {
                 mainContent->setCurrentIndex(2);
             }
             // TodoPage
-            else if (current == sideMenu->todoItem) {
+            else if (current == this->sideMenu->todoItem) {
                 mainContent->setCurrentIndex(3);
 
                 auto todoPageWidget = mainContent->todoPage();
@@ -98,7 +96,7 @@ MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
                     todoPage->setTodo(newTodo);
                 }
             }
-            else if (current && current->parent() == sideMenu->todoItem) {
+            else if (current && current->parent() == this->sideMenu->todoItem) {
                 mainContent->setCurrentIndex(3);
 
                 auto todoPageWidget = mainContent->todoPage();
@@ -121,7 +119,12 @@ MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
 
         if (todoPage && homePage) {
             connect(todoPage, &TodoPage::todosChanged, homePage, &HomePage::refreshTodos);
-}
+        }
+
+        if (homePage && mainContent) {
+            connect(homePage, &HomePage::editTodoRequested, mainContent, &MainContent::showTodoPage);
+        }
+
 
 
 

@@ -13,6 +13,7 @@ public:
 
 
     void populateTodos(int user_id);
+    void setCurrentItemByName(const QString& itemName);
 
 public slots:
     void refreshTodos();

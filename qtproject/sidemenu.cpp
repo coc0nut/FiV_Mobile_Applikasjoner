@@ -6,7 +6,7 @@ SideMenu::SideMenu(QWidget *parent) : QTreeWidget(parent) {
 
     setStyleSheet(
         "QTreeWidget {"
-        " border-radius: 12px;"
+        " border-radius: 8px;"
         " background: #d3d6db;"
         " color: #000000;"
         " padding: 10px;"
@@ -36,5 +36,12 @@ void SideMenu::populateTodos(int user_id) {
 void SideMenu::refreshTodos() {
     if (currentUserId != -1) {
         populateTodos(currentUserId);
+    }
+}
+
+void SideMenu::setCurrentItemByName(const QString& itemName) {
+    QList<QTreeWidgetItem*> items = findItems(itemName, Qt::MatchRecursive | Qt::MatchExactly);
+    if (!items.isEmpty()) {
+        setCurrentItem(items.first());
     }
 }

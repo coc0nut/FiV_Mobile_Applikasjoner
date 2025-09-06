@@ -5,6 +5,7 @@
 #include "database.h"
 #include "user.h"
 #include "todo.h"
+#include "sidemenu.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -27,6 +28,10 @@ private:
     Database *db;
     User *user;
     Todo *todo;
+
+    SideMenu *sideMenu;
+
+    QString bgColor {"#393e46"}, textColor {"#f0ece2"};
 
     Todo *newTodo = nullptr;
 

@@ -87,7 +87,7 @@ HomePage::HomePage(Database *db, User *user, QWidget *parent) : QWidget{parent},
 
     // Todos Layout
         todoLayout = new QVBoxLayout();
-        todoLayout->setSpacing(10);
+        todoLayout->setSpacing(1);
         homePageLayout->addLayout(todoLayout);
         refreshTodos();
         
@@ -118,118 +118,178 @@ void HomePage::refreshTodos() {
         delete child;
     }
 
-        QVector<Todo*> userTodos;
+    QVector<Todo*> userTodos;
 
-        for (Todo* t: Todo::todos) {
-            if (t->user_id() == user->id()) {
+    for (Todo* t: Todo::todos) {
+        if (t->user_id() == user->id()) {
 
-                userTodos.append(t);
-            }
+            userTodos.append(t);
         }
+    }
 
-        std::sort(userTodos.begin(), userTodos.end(), [](Todo *a, Todo *b) {
-            QDateTime dueA = QDateTime::fromString(a->due(), Qt::ISODate);
-            QDateTime dueB = QDateTime::fromString(b->due(), Qt::ISODate);
-            return dueA < dueB;
-        });
+    std::sort(userTodos.begin(), userTodos.end(), [](Todo *a, Todo *b) {
+        QDateTime dueA = QDateTime::fromString(a->due(), Qt::ISODate);
+        QDateTime dueB = QDateTime::fromString(b->due(), Qt::ISODate);
+        return dueA < dueB;
+    });
 
-        for (int i = 0; i < userTodos.length(); i++) {
-            Todo *todo = userTodos[i];
-
-
-            // Format DateTime strings
-            QDateTime dueDT = QDateTime::fromString(todo->due(), Qt::ISODate);
-            QString dueStr = dueDT.toString("dd.MM.yyyy HH:mm");
-
-            QDateTime createdDT = QDateTime::fromString(todo->created_on(), Qt::ISODate);
-            QString createdStr = createdDT.toString("dd.MM.yyyy HH:mm");
-
-            QDateTime updatedDT = QDateTime::fromString(todo->updated_on(), Qt::ISODate);
-            QString updatedStr = updatedDT.toString("dd.MM.yyyy HH:mm");
-
-            QDateTime now = QDateTime::currentDateTime();
-            int daysToDue = now.daysTo(dueDT);
-
-            QWidget *alertSquare = nullptr;
-            QTimer *flashTimer = nullptr;
-
-        
-            if (daysToDue >= 0 && daysToDue < 3) {
-                alertSquare = new QWidget(contentWidget);
-                alertSquare->setFixedSize(25, 25);
-                alertSquare->setStyleSheet(
-                    "background: #be3144;"
-                    "border-radius: 50%;"
-                    "padding: 8px;"
-                    "color: #000000;"
-                    "margin-bottom: 12px;"
-                );
-
-                flashTimer = new QTimer(alertSquare);
-                QObject::connect(flashTimer, &QTimer::timeout, alertSquare, [alertSquare]() {
-                    bool on = alertSquare->property("flashOn").toBool();
-                    if (on) {
-                        alertSquare->setStyleSheet(
-                            "background: #be3144;"
-                            "border-radius: 8px;"
-                            "padding: 8px;"
-                            "margin-bottom: 12px;"
-                        );
-                    } else {
-                        alertSquare->setStyleSheet(
-                            "background: transparent;"
-                            "border-radius: 8px;"
-                            "padding: 8px;"
-                            "margin-bottom: 12px;"
-                            );
-                    }
-                    alertSquare->setProperty("flashOn", !on);
-
-                });
-                flashTimer->start(500);
-                
-            }
+    for (int i = 0; i < userTodos.length(); i++) {
+        Todo *todo = userTodos[i];
+        int todoId = todo->id();
 
 
-            QVBoxLayout *todoItemLayout = new QVBoxLayout();
-            todoItemLayout->setSpacing(1);
+        // Format DateTime strings
+        QDateTime dueDT = QDateTime::fromString(todo->due(), Qt::ISODate);
+        QString dueStr = dueDT.toString("dd.MM.yyyy HH:mm");
 
-            QLabel *title = new QLabel(userTodos[i]->title(), contentWidget);
-            title->setStyleSheet("font-weight: bold; font-size: 18px;");
+        QDateTime createdDT = QDateTime::fromString(todo->created_on(), Qt::ISODate);
+        QString createdStr = createdDT.toString("dd.MM.yyyy HH:mm");
 
-            QLabel *text = new QLabel(userTodos[i]->text(), contentWidget);
-            text->setStyleSheet("font-size: 15px;");
+        QDateTime updatedDT = QDateTime::fromString(todo->updated_on(), Qt::ISODate);
+        QString updatedStr = updatedDT.toString("dd.MM.yyyy HH:mm");
 
-            QLabel *created_on = new QLabel("Created: " + createdStr + " | Updated: " + updatedStr, contentWidget);
-            created_on->setStyleSheet("color: #000; font-size: 12px; font-weight: bold;");
+        QDateTime now = QDateTime::currentDateTime();
+        int daysToDue = now.daysTo(dueDT);
 
-            QLabel *due = new QLabel("Due: " + dueStr, contentWidget);
-            due->setStyleSheet("font-weight: bold; color: #888; font-size: 15px;");
+        QWidget *alertSquare = nullptr;
+        QTimer *flashTimer = nullptr;
 
-            editButton = new QPushButton("Edit", this);
 
-            todoItemLayout->addWidget(due);
-            todoItemLayout->addWidget(title);
-            todoItemLayout->addWidget(text);
-            todoItemLayout->addWidget(editButton);
-            todoItemLayout->addWidget(created_on);
-
-            QHBoxLayout *rowLayout = new QHBoxLayout();
-            rowLayout->addLayout(todoItemLayout);
-            if (alertSquare) rowLayout->addWidget(alertSquare);
-
-            QWidget *todoWidget = new QWidget(contentWidget);
-            todoWidget->setLayout(rowLayout);
-            todoWidget->setStyleSheet(
-                "background: #d3d6db;"
-                "border-radius: 8px;"
+        if (daysToDue >= 0 && daysToDue < 3) {
+            alertSquare = new QWidget(contentWidget);
+            alertSquare->setFixedSize(25, 25);
+            alertSquare->setStyleSheet(
+                "background: #be3144;"
+                "border-radius: 50%;"
                 "padding: 8px;"
                 "color: #000000;"
                 "margin-bottom: 12px;"
             );
 
-            todoLayout->addWidget(todoWidget);
+            flashTimer = new QTimer(alertSquare);
+            QObject::connect(flashTimer, &QTimer::timeout, alertSquare, [alertSquare]() {
+                bool on = alertSquare->property("flashOn").toBool();
+                if (on) {
+                    alertSquare->setStyleSheet(
+                        "background: #be3144;"
+                        "border-radius: 8px;"
+                        "padding: 8px;"
+                        "margin-bottom: 12px;"
+                    );
+                } else {
+                    alertSquare->setStyleSheet(
+                        "background: transparent;"
+                        "border-radius: 8px;"
+                        "padding: 8px;"
+                        "margin-bottom: 12px;"
+                        );
+                }
+                alertSquare->setProperty("flashOn", !on);
+
+            });
+            flashTimer->start(500);
 
         }
 
+
+        QVBoxLayout *todoItemLayout = new QVBoxLayout();
+        todoItemLayout->setSpacing(1);
+
+        QLabel *title = new QLabel(userTodos[i]->title(), contentWidget);
+        title->setWordWrap(true);
+        title->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        title->setStyleSheet("font-weight: bold; font-size: 18px;");
+
+        QLabel *text = new QLabel(userTodos[i]->text(), contentWidget);
+        text->setWordWrap(true);
+        text->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        text->setStyleSheet(
+            QString(
+                "background: %1;"
+                "color: %2;"
+                "font-size: 15px;"
+            )
+            .arg(bgColor)
+            .arg(textColor)
+        );
+
+        QLabel *created_on = new QLabel("Created: " + createdStr + " | Updated: " + updatedStr, contentWidget);
+        created_on->setStyleSheet("color: #000; font-size: 12px; font-weight: bold;");
+
+        QLabel *due = new QLabel("Due: " + dueStr, contentWidget);
+        due->setStyleSheet("font-weight: bold; color: #888; font-size: 15px;");
+
+
+        QHBoxLayout *todoButtons = new QHBoxLayout();
+        todoButtons->setSpacing(20);
+
+        editButton = new QPushButton("Edit", this);
+        editButton->setStyleSheet(
+            QString(
+                "background: %1;"
+                "color: %2;"
+                "border: 1px solid white"
+                )
+                .arg(bgColor)
+                .arg(textColor)
+        );
+
+        connect(editButton, &QPushButton::clicked, this, [this, todoId]() {
+            emit editTodoRequested(todoId);
+
+        });
+
+        completeButton = new QPushButton("Complete", this);
+        completeButton->setStyleSheet(
+            QString(
+                "background: %1;"
+                "color: %2;"
+                "border: 1px solid white"
+            )
+            .arg(bgColor)
+            .arg(textColor)
+        );
+
+        connect(completeButton, &QPushButton::clicked, this, &HomePage::onCompleteButtonClicked);
+
+        todoButtons->addWidget(editButton);
+        todoButtons->addWidget(completeButton);
+
+        todoItemLayout->addWidget(due);
+        todoItemLayout->addWidget(title);
+        todoItemLayout->addWidget(text);
+        todoItemLayout->addLayout(todoButtons);
+        todoItemLayout->addWidget(created_on);
+
+        QHBoxLayout *rowLayout = new QHBoxLayout();
+        rowLayout->addLayout(todoItemLayout);
+        if (alertSquare) rowLayout->addWidget(alertSquare);
+
+        QWidget *todoWidget = new QWidget(contentWidget);
+        todoWidget->setLayout(rowLayout);
+        todoWidget->setStyleSheet(
+            "background: #d3d6db;"
+            "border-radius: 8px;"
+            "padding: 8px;"
+            "color: #000000;"
+            "margin-bottom: 12px;"
+        );
+
+        todoLayout->addWidget(todoWidget);
+
+    }
+
+}
+
+
+
+void HomePage::onEditButtonClicked()
+{
+    qDebug() << "editButton Clicked...";
+
+}
+
+void HomePage::onCompleteButtonClicked()
+{
+    qDebug() << "completeButton clicked...";
 }

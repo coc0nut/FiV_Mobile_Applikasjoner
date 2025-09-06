@@ -17,8 +17,12 @@ public:
 
 public slots:
     void refreshTodos();
+    void onEditButtonClicked();
+    void onCompleteButtonClicked();
 
 signals:
+    void editTodoRequested(int todoId);
+    
 
 
 private:
@@ -26,8 +30,6 @@ private:
     Database *db;
     User *user;
     QLabel *userDetails;
-    QLabel *name;
-    QLabel *email;
     QLabel *bilde;
 
     QLabel *title;
@@ -36,7 +38,8 @@ private:
     QLabel *updated_on;
     QLabel *due;
 
-    QPushButton *editButton;
+    QPushButton *editButton, *completeButton;
+    QString bgColor {"#393e46"}, textColor {"#f0ece2"};
 
     QWidget *contentWidget;
     QVBoxLayout *homePageLayout;
