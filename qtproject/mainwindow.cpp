@@ -23,6 +23,7 @@ MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
     newTodo = new Todo(this);
 
 
+
     // Top menu bar
         QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
 
@@ -34,7 +35,7 @@ MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
             QString(
                 "background: %1;"
                 "color: %2;"
-                ).arg(bgColor).arg(textColor)
+            ).arg(bgColor).arg(textColor)
 
         );
 
@@ -42,7 +43,7 @@ MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
             QString(
                 "background: %1;"
                 "color: %2;"
-                ).arg(bgColor).arg(textColor)
+            ).arg(bgColor).arg(textColor)
         );
 
     // Main content
@@ -63,9 +64,24 @@ MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
         // Side menu (left)
             sideMenu = new SideMenu(central);
             sideMenu->populateTodos(user->id());
+            sideMenu->setStyleSheet(
+                QString(
+                    "background: %1;"
+                    "color: %2;"
+                    "border-radius: 8px;"
+                    "padding: 4px;"
+                ).arg(bgColorDark, textColorDark)
+            );
 
         // Main content area
             MainContent *mainContent = new MainContent(db, user, todo, sideMenu, central);
+            mainContent->setStyleSheet(
+                QString(
+                    "background: %1;"
+                    "color: %2;"
+                ).arg(bgColor, textColor)
+            );
+
 
     // Connections
         // Sidemenu to main content area

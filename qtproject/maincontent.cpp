@@ -8,10 +8,12 @@
 MainContent::MainContent(Database *db, User *user, Todo *todo, SideMenu *sideMenu, QWidget *parent)
     : QStackedWidget{parent}, db(db), user(user), todo(todo), sideMenu(sideMenu)
 {
-    m_homePage = new HomePage(db, user);
-    m_profilePage = new ProfilePage(db, user);
-    m_settingsPage = new QWidget();
-    m_todoPage = new TodoPage(db, user, todo);
+    m_homePage = new HomePage(db, user, this);
+    m_profilePage = new ProfilePage(db, user, this);
+    m_settingsPage = new QWidget(this);
+    m_todoPage = new TodoPage(db, user, todo, this);
+
+
 
     addWidget(m_homePage);
     addWidget(m_profilePage);
@@ -20,6 +22,7 @@ MainContent::MainContent(Database *db, User *user, Todo *todo, SideMenu *sideMen
 
     // forward signal todo change signal maincontent -> mainwindow
     connect(m_todoPage, SIGNAL(todosChanged()), this, SIGNAL(todosChanged()));
+    connect(m_todoPage, SIGNAL(navigateToHomePage()), this, SLOT(showHomePage()));
 }
 
 QWidget* MainContent::homePage() { return m_homePage; }
@@ -44,4 +47,11 @@ void MainContent::showTodoPage(int todoId)
     }
 
     setCurrentWidget(m_todoPage);
+}
+
+void MainContent::showHomePage() {
+    setCurrentWidget(m_homePage);
+    if (sideMenu) {
+        sideMenu->setCurrentItemByName("Home");
+    }
 }

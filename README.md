@@ -9,7 +9,7 @@
 
 ## Spørsmål til Henning
 
-1. Kan man bruke Q_PROPERTY i QWidgets?
+
 
 
 ### Planlegging:
@@ -34,6 +34,11 @@ Det skal også være en hoved side hvor gjøremålene vises med frist.
 2. Rette på new account knapp.
 
 ### Logg:
+- Periode: 05.09.25 - 09.09.25
+  Gjorde meg kjent med strukturen i programmet,
+  hvor jeg har rotet meg litt bort i forhold til sammenhengen mellom sidemenu og maincontent.
+  
+
 - 04.09.25 Torsdag:
   Satte opp kryptering av passord, slik at passord ikke lagres i klartekst.
 

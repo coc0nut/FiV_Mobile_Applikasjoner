@@ -2,6 +2,8 @@
     "files.associations": {
         "text_encoding": "cpp",
         "thread": "cpp",
-        "numbers": "cpp"
+        "numbers": "cpp",
+        "format": "cpp",
+        "new": "cpp"
     }
 }

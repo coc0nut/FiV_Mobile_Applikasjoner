@@ -9,19 +9,46 @@
 #include <QMessageBox>
 
 TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
-    : QWidget(parent), db(db), user(user), todo(todo) {
-
+: QWidget(parent), db(db), user(user), todo(todo) {
+    
     QVBoxLayout *todoLayout = new QVBoxLayout(this);
+    todoLayout->setSpacing(1);
+    
+    setLayout(todoLayout);
+    setStyleSheet(
+        QString(
+            // "background: %1;"
+            // "border-radius: 8px;"
+            // "padding: 12px;"
+            // "color: %2;"
+        )//.arg(bgColorDark, textColorDark)
+    );
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    header = new QLabel("Todo", this);
+    header->setStyleSheet(
+        QString(
+            "font-weight: bold;"
+            "font-size: 46px;"
+            "background: %1;"
+            "color %2;"
+        ).arg(bgColor, textColor));
+    todoLayout->addWidget(header);
 
     // Title edit
     todoTitleEdit = new QLineEdit(this);
     todoTitleEdit->setPlaceholderText("Title");
     todoTitleEdit->setStyleSheet(
-        "QLineEdit {"
-        " border-radius: 8px;"
-        " border: 1px solid #cccccc;"
-        " padding: 4px;"
-        "}"
+        QString(
+            "QLineEdit {"
+            " border-radius: 8px;"
+            " padding: 4px;"
+            " font-size: 23px;"
+            " font-weight: bold;"
+            " background: %1;"
+            " color: %2;"
+            "}"
+        ).arg(bgColorDark, textColorDark)
     );
     todoLayout->addWidget(todoTitleEdit);
 
@@ -33,17 +60,39 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
 
     // Times
     created_on = new QLabel("Created on: ", this);
+    created_on->setStyleSheet(
+        QString("background: %1; color: %2; font-weight: bold;").arg(bgColor, textColor)
+    );
     updated_on = new QLabel("Updated on: ", this);
+    updated_on->setStyleSheet(
+        QString("background: %1; color: %2; font-weight: bold;").arg(bgColor, textColor)
+    );
     due = new QLabel("Due: ", this);
+    due->setStyleSheet(
+        QString("background: %1; color: %2; border-radius: 8px; padding: 12px;").arg(bgColorDark, textColorDark)
+    );
 
     dueEdit = new QDateTimeEdit(QDateTime::currentDateTime(), this);
     dueEdit->setDisplayFormat("dd.MM.yyyy HH:mm");
     dueEdit->setCalendarPopup(true);
 
+    QHBoxLayout *dueLayout = new QHBoxLayout();
+    QWidget *dueContainer = new QWidget(this);
+    
+    dueContainer->setLayout(dueLayout);
+    dueContainer->setFixedWidth(250);
+    dueContainer->setFixedHeight(55);
+    dueContainer->setStyleSheet(
+        QString("background: %1; color: %2;").arg(bgColor, textColor)
+    );
+    
+    dueLayout->addWidget(due);
+    dueLayout->addWidget(dueEdit);
+    
+
     todoLayout->addWidget(created_on);
     todoLayout->addWidget(updated_on);
-    todoLayout->addWidget(due);
-    todoLayout->addWidget(dueEdit);
+    todoLayout->addWidget(dueContainer);
 
     // Completed checkbox
 
@@ -59,13 +108,17 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
 
     // Memo / text
     todoTextEdit = new QTextEdit(this);
-
+    todoTextEdit->setPlaceholderText("Enter memo here...");
     todoTextEdit->setStyleSheet(
+        QString(
         "QTextEdit {"
+        "  background: %1;"
         "  border-radius: 8px;"
         "  border: 1px solid #cccccc;"
         "  padding: 4px;"
-        "}"
+        "  font-size: 15px;"
+        "  color: %2;"
+            "}").arg(bgColorDark, textColorDark)
     );
 
     connect(todoTextEdit, &QTextEdit::textChanged, this, [this]() {
@@ -78,8 +131,11 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     addButton = new QPushButton("Add", this);
+    addButton->setStyleSheet(QString("background: %1; color: %2;").arg(bgColorDark, textColorDark));
     updateButton = new QPushButton("Update", this);
+    updateButton->setStyleSheet(QString("background: %1; color: %2;").arg(bgColorDark, textColorDark));
     deleteButton = new QPushButton("Delete", this);
+    deleteButton->setStyleSheet(QString("background: %1; color: %2;").arg(bgColorDark, textColorDark));
 
     buttonLayout->addWidget(addButton);
     buttonLayout->addWidget(updateButton);
@@ -87,6 +143,8 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
 
     todoLayout->addWidget(todoTextEdit);
     todoLayout->addLayout(buttonLayout);
+
+    
 
     // addButton connection
     connect(addButton, &QPushButton::clicked, this, [this]() {
@@ -133,6 +191,7 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
 
             QMessageBox::information(this, "Todo added", "The todo record was successfully added");
             emit todosChanged();
+            emit navigateToHomePage();
 
         } else {
             QMessageBox::warning(this, "Failed to add todo", "The todo was not added...\nPlease try again.)");
@@ -152,6 +211,7 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
             updated_on->setText("Updated on: " + this->todo->updated_on());
             QMessageBox::information(this, "Updated", "Todo updated successfully.");
             emit todosChanged();
+            emit navigateToHomePage();
         } else {
             QMessageBox::warning(this, "Error", "Failed to update todo.");
         }
@@ -167,6 +227,7 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
             try {
                 auto it = std::find(Todo::todos.begin(), Todo::todos.end(), this->todo);
                 if (it != Todo::todos.end()) {
+                    delete *it;
                     Todo::todos.erase(it);
                 }
             } catch (std::exception const &e) {
@@ -174,6 +235,7 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
             }
 
             emit todosChanged();
+            emit navigateToHomePage();
         } else {
             QMessageBox::warning(this, "Error", "Failed to delete todo.");
         }
@@ -185,6 +247,13 @@ void TodoPage::setTodo(Todo* todo) {
     if (!todo) return;
 
     this->todo = todo;
+
+    bool isExisting = todo && std::find(Todo::todos.begin(), Todo::todos.end(), todo) != Todo::todos.end();
+    if (isExisting) {
+        header->setText("Edit Todo");
+    } else {
+        header->setText("Add new Todo");
+    }
 
     todoTitleEdit->setText(todo->title());
     created_on->setText("Created on: " + todo->created_on());

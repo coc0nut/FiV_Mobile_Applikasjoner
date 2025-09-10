@@ -11,6 +11,9 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 
+    QFont appFont("Calibri");
+    QApplication::setFont(appFont);
+
     User user;
     Todo todo;
 
@@ -30,7 +33,7 @@ int main(int argc, char *argv[])
 
     for (auto &t : Todo::todos) {
         Todo::todo_count++;
-        qInfo() << t->id() << t->user_id() << t->title() << t->text() << t->completed() << t->created_on() << t->updated_on() << t->due();
+        //qInfo() << t->id() << t->user_id() << t->title() << t->text() << t->completed() << t->created_on() << t->updated_on() << t->due();
     }
 
 

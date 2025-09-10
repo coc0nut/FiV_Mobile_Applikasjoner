@@ -31,7 +31,9 @@ private:
 
     SideMenu *sideMenu;
 
-    QString bgColor {"#393e46"}, textColor {"#f0ece2"};
+    QString bgColor {"#d3d6db"}, textColor {"#393e46"};
+    QString bgColorDark {"#393e46"}, textColorDark {"#f0ece2"};
+    QString btnBgColor {"#393e46"}, btnTextColor {"#f0ece2"};
 
     Todo *newTodo = nullptr;
 

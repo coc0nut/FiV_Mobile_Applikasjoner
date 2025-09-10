@@ -37,7 +37,6 @@ qt_add_executable(qtproject
 )
 
 target_link_libraries(qtproject PRIVATE Qt6::Widgets Qt6::Core Qt6::Sql)
-target_link_libraries(qtproject PRIVATE Qt6::Widgets)
 
 set_target_properties(qtproject PROPERTIES
     MACOSX_BUNDLE TRUE

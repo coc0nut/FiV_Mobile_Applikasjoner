@@ -17,6 +17,7 @@ public:
 
 public slots:
     void showTodoPage(int todoId);
+    void showHomePage();
 
 signals:
     void todosChanged();

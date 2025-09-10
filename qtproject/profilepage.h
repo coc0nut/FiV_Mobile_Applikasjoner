@@ -2,6 +2,7 @@
 #define PROFILEPAGE_H
 
 #include <QWidget>
+#include <QLineEdit>
 #include "database.h"
 #include "user.h"
 
@@ -16,6 +17,8 @@ signals:
 private:
     Database *db;
     User *user;
+
+    QLineEdit *usernameEdit;
 };
 
 #endif // PROFILEPAGE_H

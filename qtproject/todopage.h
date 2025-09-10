@@ -21,8 +21,10 @@ public:
     void setTodo(Todo *todo);
 
 
+
 signals:
     void todosChanged();
+    void navigateToHomePage();
 
 private:
     Database *db;
@@ -33,10 +35,15 @@ private:
     QLabel *updated_on;
     QLabel *due;
     QLabel *completed_on;
+    QLabel *header;
     QTextEdit *todoTextEdit;
     QDateTimeEdit *dueEdit;
     QPushButton *addButton, *updateButton, *deleteButton;
     QCheckBox *completedCheckBox;
+
+    QString bgColor {"#d3d6db"}, textColor {"#393e46"};
+    QString bgColorDark {"#393e46"}, textColorDark {"#f0ece2"};
+    QString btnBgColor {"#393e46"}, btnTextColor {"#f0ece2"};
 };
 
 #endif // TODOPAGE_H
