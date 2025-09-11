@@ -108,7 +108,7 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
 
     // Memo / text
     todoTextEdit = new QTextEdit(this);
-    todoTextEdit->setPlaceholderText("Enter memo here...");
+    todoTextEdit->setPlaceholderText("Enter markdown here...");
     todoTextEdit->setStyleSheet(
         QString(
         "QTextEdit {"

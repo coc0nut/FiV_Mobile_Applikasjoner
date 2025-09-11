@@ -68,9 +68,11 @@ QString const Login::password() {
 
 
 void Login::onLoginClicked() {
+    qDebug() << "Raw password (as hex):" << password().toUtf8().toHex();
     QString hashed = db->hashPassword(password());
     if (db->checkUserCredentials(username(), hashed)) {
         accept();
+
     } else {
         QMessageBox::warning(this, "Login Failed", "Invalid username or password.");
     }
@@ -81,8 +83,11 @@ void Login::onNewAccountClicked() {
     if (db->checkUserExists(username())) {
         QMessageBox::warning(this, "Username exists", "Choose another username");
     } else if (!db->checkUserCredentials(username(), hashed)) {
-        db->addUser(username(), hashed);
-        QMessageBox::information(this, "Account created", "Your account was successfully created. Please login.");
+        if (db->addUser(username(), hashed)) {
+            QMessageBox::information(this, "Account created", "Your account was successfully created. Please login.");
+        } else {
+            QMessageBox::warning(this, "Could not add user", "Maybe user already exists.");
+        }
     } else {
         QMessageBox::warning(this, "Failed to create account", "User already exists.");
     }

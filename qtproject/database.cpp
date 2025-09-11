@@ -61,12 +61,13 @@
     }
 
     bool Database::checkUserCredentials(QString const &username, QString const &password) {
-        QString hashedPassword = hashPassword(password);
         QSqlQuery query;
+
+        qDebug() << password;
 
         query.prepare("SELECT id, username, password FROM users WHERE username = ? AND password = ?");
         query.addBindValue(username);
-        query.addBindValue(hashedPassword);
+        query.addBindValue(password);
 
         if (query.exec() && query.next()) {
             user->setId(query.value(0).toInt());
@@ -93,14 +94,38 @@
     }
 
     bool Database::addUser(QString const &username, QString const &password) {
-        QString hashedPassword = hashPassword(password);
         QSqlQuery query;
 
         query.prepare("INSERT INTO users (username, password) VALUES (?, ?)");
         query.addBindValue(username);
-        query.addBindValue(hashedPassword);
+        query.addBindValue(password);
 
         return query.exec();
+    }
+
+    bool Database::updateUser(User *user)
+    {
+        QSqlQuery query;
+
+        query.prepare(
+            "update users set "
+            "username = ?, "
+            "password = ?, "
+            "name = ?, "
+            "email = ? "
+            "where id = ?"
+            );
+        query.addBindValue(user->username());
+        query.addBindValue(user->password());
+        query.addBindValue(user->name());
+        query.addBindValue(user->email());
+        query.addBindValue(user->id());
+
+        if (!query.exec()) {
+            return false;
+        }
+
+        return true;
     }
 
     bool Database::importUsers()

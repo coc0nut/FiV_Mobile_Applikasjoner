@@ -138,24 +138,26 @@ void HomePage::refreshTodos() {
         Todo *todo = userTodos[i];
         int todoId = todo->id();
 
-        if (!userTodos[i]->completed()) {
+        // Format DateTime strings
+        QDateTime dueDT = QDateTime::fromString(todo->due(), Qt::ISODate);
+        QString dueStr = dueDT.toString("dd.MM.yyyy HH:mm");
+
+        QDateTime createdDT = QDateTime::fromString(todo->created_on(), Qt::ISODate);
+        QString createdStr = createdDT.toString("dd.MM.yyyy HH:mm");
+
+        QDateTime updatedDT = QDateTime::fromString(todo->updated_on(), Qt::ISODate);
+        QString updatedStr = updatedDT.toString("dd.MM.yyyy HH:mm");
+
+        QDateTime now = QDateTime::currentDateTime();
+        int daysToDue = now.daysTo(dueDT);
+
+        QWidget *alertSquare = nullptr;
+        QTimer *flashTimer = nullptr;
+
+        if (!todo->completed() && dueDT > QDateTime::currentDateTime() ) {
 
 
-            // Format DateTime strings
-            QDateTime dueDT = QDateTime::fromString(todo->due(), Qt::ISODate);
-            QString dueStr = dueDT.toString("dd.MM.yyyy HH:mm");
 
-            QDateTime createdDT = QDateTime::fromString(todo->created_on(), Qt::ISODate);
-            QString createdStr = createdDT.toString("dd.MM.yyyy HH:mm");
-
-            QDateTime updatedDT = QDateTime::fromString(todo->updated_on(), Qt::ISODate);
-            QString updatedStr = updatedDT.toString("dd.MM.yyyy HH:mm");
-
-            QDateTime now = QDateTime::currentDateTime();
-            int daysToDue = now.daysTo(dueDT);
-
-            QWidget *alertSquare = nullptr;
-            QTimer *flashTimer = nullptr;
 
 
             if (daysToDue >= 0 && daysToDue < 3) {

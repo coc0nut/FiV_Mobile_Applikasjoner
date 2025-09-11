@@ -24,6 +24,7 @@ public:
     bool checkUserCredentials(QString const &username, QString const &password);
     bool checkUserExists(QString const &username);
     bool addUser(QString const &username, QString const &password);
+    bool updateUser(User *user);
     bool importUsers();
 
     bool createTodosTable();
