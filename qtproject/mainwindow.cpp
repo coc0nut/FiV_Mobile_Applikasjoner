@@ -62,7 +62,7 @@ MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
         QHBoxLayout *mainLayout = new QHBoxLayout(central);
         mainLayout->setSpacing(10);
 
-            QVBoxLayout *sideLayout = new QVBoxLayout(central);
+            QVBoxLayout *sideLayout = new QVBoxLayout();
 
             // Logo
                 QLabel *logo = new QLabel("Note.io", this);
@@ -180,7 +180,6 @@ MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
         mainLayout->addWidget(vLine);
         mainLayout->addWidget(mainContent, 1);
 
-        central->setLayout(mainLayout);
         setCentralWidget(central);
 
     // Status bar

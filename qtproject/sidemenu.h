@@ -20,6 +20,9 @@ public slots:
 
 private:
     int currentUserId = -1;
+    QString bgColor {"#a6a6a6"}, textColor {"#393e46"};
+    QString bgColorDark {"#393e46"}, textColorDark {"#f0ece2"};
+    QString btnBgColor {"#393e46"}, btnTextColor {"#f0ece2"};
 };
 
 #endif // SIDEMENU_H

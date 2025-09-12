@@ -10,6 +10,8 @@
 Login::Login(Database *db, User *user, QWidget *parent)
     : QDialog{parent}, db(db), user(user) {
 
+    setStyleSheet(QString("background: %1; color: %2;").arg(bgColorDark, textColorDark));
+
     setWindowTitle("Note.io");
     resize(640, 320);
 

@@ -11,7 +11,8 @@ ProfilePage::ProfilePage(Database *db, User *user, QWidget *parent)
 
     setStyleSheet(QString(
             "background: %1; color: %2; border-radius: 8px;"
-    ).arg(bgColorDark, textColorDark));
+        ).arg(bgColorDark, textColorDark)
+    );
 
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -95,10 +96,6 @@ ProfilePage::ProfilePage(Database *db, User *user, QWidget *parent)
     profileLayout->setSpacing(2);
     profileLayout->addWidget(header);
     profileLayout->addWidget(changePasswordWidget);
-
-
-
-
 
 }
 

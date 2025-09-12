@@ -8,7 +8,6 @@
 
 #include "database.h"
 #include "user.h"
-#include "todo.h"
 
 class HomePage : public QWidget {
     Q_OBJECT
@@ -43,7 +42,9 @@ private:
     QLabel *due;
 
     QPushButton *editButton, *completeButton;
-    QString bgColor {"#d3d6db"}, textColor {"#393e46"};
+
+
+    QString bgColor {"#a6a6a6"}, textColor {"#393e46"};
     QString bgColorDark {"#393e46"}, textColorDark {"#f0ece2"};
     QString btnBgColor {"#393e46"}, btnTextColor {"#f0ece2"};
 

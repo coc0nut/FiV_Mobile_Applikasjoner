@@ -23,7 +23,7 @@ HomePage::HomePage(Database *db, User *user, QWidget *parent) : QWidget{parent},
     homePageLayout->addWidget(header);
 
     homePageLayout->setAlignment(Qt::AlignTop);
-    homePageLayout->setSpacing(2);
+    homePageLayout->setSpacing(20);
     homePageLayout->setContentsMargins(8, 8, 8, 8);
 
     // Profile Card
@@ -44,6 +44,7 @@ HomePage::HomePage(Database *db, User *user, QWidget *parent) : QWidget{parent},
 
 
         QWidget *profileCardWidget = new QWidget(contentWidget);
+
         QHBoxLayout *profileCardLayout = new QHBoxLayout();
 
         profileCardLayout->setAlignment(Qt::AlignVCenter);
@@ -55,6 +56,7 @@ HomePage::HomePage(Database *db, User *user, QWidget *parent) : QWidget{parent},
                 "border-radius: 12px;"
                 "padding: 12px;"
                 "color: %2;"
+
                 ).arg(bgColorDark, textColorDark)
             );
 
@@ -75,19 +77,21 @@ HomePage::HomePage(Database *db, User *user, QWidget *parent) : QWidget{parent},
             "background: transparent;"
             "border-radius: 8px;"
             "padding: 2px;"
+            "margin-bottom: 12px;"
         );
 
         profileDetailsWidget->setLayout(profileDetailsLayout);
         profileCardLayout->addWidget(profileDetailsWidget, 1);
 
         homePageLayout->addWidget(profileCardWidget);
+        homePageLayout->addWidget(createLine(this));
 
 
         //homePageLayout->addWidget(createLine(contentWidget));
 
     // Todos Layout
         todoLayout = new QVBoxLayout();
-        todoLayout->setSpacing(1);
+        todoLayout->setSpacing(20);
         homePageLayout->addLayout(todoLayout);
         refreshTodos();
         
@@ -106,7 +110,6 @@ HomePage::HomePage(Database *db, User *user, QWidget *parent) : QWidget{parent},
 
         QVBoxLayout *mainLayout = new QVBoxLayout(this);
         mainLayout->addWidget(scrollArea);
-        this->setLayout(mainLayout);
 }
 
 
@@ -235,7 +238,7 @@ void HomePage::refreshTodos() {
             created_on->setStyleSheet("color: #000; font-size: 12px; font-weight: bold;");
 
             QLabel *due = new QLabel("Due: " + dueStr + " - " + QString::number(daysToDue) + " days left", contentWidget);
-            due->setStyleSheet("font-weight: bold; color: #888; font-size: 15px;");
+            due->setStyleSheet(QString("font-weight: bold; background: %1; color: %2; font-size: 15px;").arg(bgColorDark, textColorDark));
 
 
             QHBoxLayout *todoButtons = new QHBoxLayout();
@@ -286,15 +289,16 @@ void HomePage::refreshTodos() {
             rowLayout->addLayout(todoItemLayout);
             // if (alertSquare) rowLayout->addWidget(alertSquare);
 
-            QWidget *todoWidget = new QWidget(contentWidget);
+            QWidget *todoWidget = new QWidget();
             todoWidget->setLayout(rowLayout);
-            todoWidget->setStyleSheet(
-                "background: #d3d6db;"
+            todoWidget->setStyleSheet(QString(
+                "background: %1;"
                 "border-radius: 8px;"
                 "padding: 8px;"
-                "color: #000000;"
+                "color: %2;"
                 "margin-bottom: 12px;"
-                );
+                ).arg(bgColor, textColor)
+            );
 
             todoLayout->addWidget(todoWidget);
             todoLayout->addWidget(createLine(this));
