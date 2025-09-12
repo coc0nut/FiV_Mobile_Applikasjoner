@@ -75,6 +75,7 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
     dueEdit = new QDateTimeEdit(QDateTime::currentDateTime(), this);
     dueEdit->setDisplayFormat("dd.MM.yyyy HH:mm");
     dueEdit->setCalendarPopup(true);
+    dueEdit->setFixedWidth(150);
     //dueEdit->setStyleSheet(QString("background: %1; color: %2;").arg(bgColor, textColor));
 
     QHBoxLayout *dueLayout = new QHBoxLayout();
