@@ -240,8 +240,9 @@ void HomePage::refreshTodos() {
 
             QHBoxLayout *todoButtons = new QHBoxLayout();
             todoButtons->setSpacing(20);
-
+            int buttonHeight = 40;
             editButton = new QPushButton("Edit", this);
+            editButton->setFixedHeight(buttonHeight);
             editButton->setStyleSheet(
                 QString(
                     "background: %1;"
@@ -256,6 +257,7 @@ void HomePage::refreshTodos() {
             });
 
             completeButton = new QPushButton("Complete", this);
+            completeButton->setFixedHeight(buttonHeight);
             completeButton->setStyleSheet(
                 QString(
                     "background: %1;"

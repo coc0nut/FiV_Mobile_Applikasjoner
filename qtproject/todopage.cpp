@@ -29,7 +29,7 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
     header->setStyleSheet(
         QString(
             "font-weight: bold;"
-            "font-size: 46px;"
+            "font-size: 35px;"
             "background: %1;"
             "color %2;"
         ).arg(bgColor, textColor));
@@ -69,12 +69,13 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
     );
     due = new QLabel("Due: ", this);
     due->setStyleSheet(
-        QString("background: %1; color: %2; border-radius: 8px; padding: 12px;").arg(bgColorDark, textColorDark)
+        QString("background: %1; color: %2; border-radius: 8px; padding: 8px; font-weight: bold;").arg(bgColor, textColor)
     );
 
     dueEdit = new QDateTimeEdit(QDateTime::currentDateTime(), this);
     dueEdit->setDisplayFormat("dd.MM.yyyy HH:mm");
     dueEdit->setCalendarPopup(true);
+    dueEdit->setStyleSheet(QString("background: %1; color: %2;").arg(bgColor, textColor));
 
     QHBoxLayout *dueLayout = new QHBoxLayout();
     QWidget *dueContainer = new QWidget(this);
@@ -82,9 +83,9 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
     dueContainer->setLayout(dueLayout);
     dueContainer->setFixedWidth(250);
     dueContainer->setFixedHeight(55);
-    dueContainer->setStyleSheet(
-        QString("background: %1; color: %2;").arg(bgColor, textColor)
-    );
+    // dueContainer->setStyleSheet(
+    //     QString("background: %1; color: %2; border-radius: 8px;").arg(bgColorDark, textColorDark)
+    // );
     
     dueLayout->addWidget(due);
     dueLayout->addWidget(dueEdit);
@@ -130,12 +131,19 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
     // Buttons
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
+    int buttonHeight = 40;
     addButton = new QPushButton("Add", this);
-    addButton->setStyleSheet(QString("background: %1; color: %2;").arg(bgColorDark, textColorDark));
+    addButton->setStyleSheet(QString("background: %1; color: %2; border-radius: 8px;").arg(bgColorDark, textColorDark));
+    addButton->setFixedHeight(buttonHeight);
+    
     updateButton = new QPushButton("Update", this);
-    updateButton->setStyleSheet(QString("background: %1; color: %2;").arg(bgColorDark, textColorDark));
+    updateButton->setStyleSheet(QString("background: %1; color: %2; border-radius: 8px;").arg(bgColorDark, textColorDark));
+    updateButton->setFixedHeight(buttonHeight);
+    
     deleteButton = new QPushButton("Delete", this);
-    deleteButton->setStyleSheet(QString("background: %1; color: %2;").arg(bgColorDark, textColorDark));
+    deleteButton->setStyleSheet(QString("background: %1; color: %2; border-radius: 8px;").arg(bgColorDark, textColorDark));
+    deleteButton->setFixedHeight(buttonHeight);
+
 
     buttonLayout->addWidget(addButton);
     buttonLayout->addWidget(updateButton);
@@ -143,8 +151,6 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
 
     todoLayout->addWidget(todoTextEdit);
     todoLayout->addLayout(buttonLayout);
-
-    
 
     // addButton connection
     connect(addButton, &QPushButton::clicked, this, [this]() {
@@ -251,8 +257,12 @@ void TodoPage::setTodo(Todo* todo) {
     bool isExisting = todo && std::find(Todo::todos.begin(), Todo::todos.end(), todo) != Todo::todos.end();
     if (isExisting) {
         header->setText("Edit Todo");
+        addButton->hide();
+        updateButton->show();
     } else {
         header->setText("Add new Todo");
+        addButton->show();
+        updateButton->hide();
     }
 
     todoTitleEdit->setText(todo->title());

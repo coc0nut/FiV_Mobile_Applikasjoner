@@ -2,7 +2,7 @@
 
 #include <QVBoxLayout>
 #include <QPushButton>
-
+#include <QMessageBox>
 
 ProfilePage::ProfilePage(Database *db, User *user, QWidget *parent)
     : QWidget{parent}, db(db), user(user)
@@ -68,10 +68,10 @@ ProfilePage::ProfilePage(Database *db, User *user, QWidget *parent)
         // confirm new password
         confirmPasswordEdit = new QLineEdit("", this);
         confirmPasswordEdit->setStyleSheet(QString(
-           "background: %1; color: %2;"
-           "border-radius: 8px;"
-           "font-size: 18px;"
-           "padding: 10px;"
+            "background: %1; color: %2;"
+            "border-radius: 8px;"
+            "font-size: 18px;"
+            "padding: 10px;"
         ).arg(bgColorDark, textColorDark));
         confirmPasswordEdit->setPlaceholderText("Confirm new password...");
         confirmPasswordEdit->setEchoMode(QLineEdit::Password);
@@ -80,13 +80,14 @@ ProfilePage::ProfilePage(Database *db, User *user, QWidget *parent)
 
         // Changed Password button
 
-    QPushButton *changePasswordButton = new QPushButton("Change Password", this);
+    QPushButton *changePasswordButton = new QPushButton("Submit", this);
+    changePasswordButton->setFixedHeight(40);
 
     changePasswordLayout->addWidget(changePasswordButton);
     connect(changePasswordButton, &QPushButton::clicked, this, &ProfilePage::onChangePasswordClicked);
 
     QWidget *changePasswordWidget = new QWidget(this);
-    changePasswordWidget->setFixedWidth(350);
+    // changePasswordWidget->setFixedWidth(350);
     changePasswordWidget->setLayout(changePasswordLayout);
 
 
@@ -106,27 +107,28 @@ void ProfilePage::onChangePasswordClicked()
     QString oldPassword = oldPasswordEdit->text();
     QString newPassword = newPasswordEdit->text();
     QString confirmPassword = confirmPasswordEdit->text();
-    qDebug() << oldPassword;
+    // qDebug() << oldPassword;
     QString oldPasswordHashed = db->hashPassword(oldPassword);
 
-    qDebug() << "old password: " << oldPassword << " | " << oldPasswordHashed;
-    qDebug() << "Raw password (as hex):" << oldPassword.toUtf8().toHex();
+    // qDebug() << "old password: " << oldPassword << " | " << oldPasswordHashed;
+    // qDebug() << "Raw password (as hex):" << oldPassword.toUtf8().toHex();
 
     if (newPassword != confirmPassword) {
+        QMessageBox::warning(this, "Error", "Password confirmation failed.");
         return;
     }
 
     QString newPasswordHashed = db->hashPassword(newPassword);
-    qDebug() << "new password: " << newPassword << " | " << newPasswordHashed;
+    // qDebug() << "new password: " << newPassword << " | " << newPasswordHashed;
 
     if (oldPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
-        // Show error message
+        QMessageBox::warning(this, "Error", "All fields must be populated.");
         return;
     }
 
    
     if (!db->checkUserCredentials(user->username(), oldPasswordHashed)) {
-        // Show error message
+        QMessageBox::warning(this, "Error", "Wrong current password");
         return;
     }
     user->setPassword(newPasswordHashed);

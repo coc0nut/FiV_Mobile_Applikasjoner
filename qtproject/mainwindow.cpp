@@ -35,7 +35,7 @@ MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
             QString(
                 "background: %1;"
                 "color: %2;"
-            ).arg(bgColor).arg(textColor)
+            ).arg(bgColorDark, textColorDark)
 
         );
 
@@ -43,7 +43,7 @@ MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
             QString(
                 "background: %1;"
                 "color: %2;"
-            ).arg(bgColor).arg(textColor)
+            ).arg(bgColorDark, textColorDark)
         );
 
     // Main content
@@ -54,24 +54,51 @@ MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
             QString(
                 "background: %1;"
                 "color: %2;"
-            ).arg(bgColor).arg(textColor)
+            ).arg(bgColor, textColor)
 
 
         );
 
         QHBoxLayout *mainLayout = new QHBoxLayout(central);
+        mainLayout->setSpacing(10);
 
-        // Side menu (left)
-            sideMenu = new SideMenu(central);
-            sideMenu->populateTodos(user->id());
-            sideMenu->setStyleSheet(
-                QString(
-                    "background: %1;"
-                    "color: %2;"
-                    "border-radius: 8px;"
-                    "padding: 4px;"
-                ).arg(bgColorDark, textColorDark)
-            );
+            QVBoxLayout *sideLayout = new QVBoxLayout(central);
+
+            // Logo
+                QLabel *logo = new QLabel("Note.io", this);
+                logo->setAlignment(Qt::AlignCenter);
+                logo->setStyleSheet(QString(
+                        "background: %1;"
+                        "color: %2;"
+                        "font-size: 46px;"
+                        "font-weight: bold;"
+                    ).arg(bgColor, textColor)
+                );
+
+                sideLayout->addWidget(logo);
+
+
+            // Side menu (left)
+                sideMenu = new SideMenu(central);
+                sideMenu->populateTodos(user->id());
+                sideMenu->setStyleSheet(
+                    QString(
+                        "background: %1;"
+                        "color: %2;"
+                        "border-radius: 8px;"
+                        "padding: 4px;"
+                    ).arg(bgColorDark, textColorDark)
+                );
+                sideLayout->addWidget(sideMenu);
+
+        // Line to separate sidemenu and maincontent visually
+        QFrame *vLine = new QFrame(this);
+        vLine->setFrameShape(QFrame::VLine);
+        vLine->setFrameShadow(QFrame::Sunken);
+        vLine->setLineWidth(2);
+
+
+
 
         // Main content area
             MainContent *mainContent = new MainContent(db, user, todo, sideMenu, central);
@@ -79,6 +106,7 @@ MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
                 QString(
                     "background: %1;"
                     "color: %2;"
+                    "padding: 5;"
                 ).arg(bgColor, textColor)
             );
 
@@ -147,7 +175,9 @@ MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
 
     // Preparing
 
-        mainLayout->addWidget(sideMenu);
+
+        mainLayout->addLayout(sideLayout);
+        mainLayout->addWidget(vLine);
         mainLayout->addWidget(mainContent, 1);
 
         central->setLayout(mainLayout);
@@ -159,7 +189,7 @@ MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
             QString(
                 "background: %1;"
                 "color: %2;"
-                ).arg(bgColor).arg(textColor)
+                ).arg(bgColorDark, textColorDark)
         );
 
 }
