@@ -72,10 +72,10 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
         QString("background: %1; color: %2; border-radius: 8px; padding: 8px; font-weight: bold;").arg(bgColor, textColor)
     );
 
-    dueEdit = new QDateTimeEdit(QDateTime::currentDateTime(), this);
+    dueEdit = new QDateTimeEdit(QDateTime::currentDateTime().addDays(7), this);
     dueEdit->setDisplayFormat("dd.MM.yyyy HH:mm");
     dueEdit->setCalendarPopup(true);
-    dueEdit->setFixedWidth(150);
+    dueEdit->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
     //dueEdit->setStyleSheet(QString("background: %1; color: %2;").arg(bgColor, textColor));
 
     QHBoxLayout *dueLayout = new QHBoxLayout();
@@ -91,7 +91,6 @@ TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
     dueLayout->addWidget(due);
     dueLayout->addWidget(dueEdit);
     
-
     todoLayout->addWidget(created_on);
     todoLayout->addWidget(updated_on);
     todoLayout->addWidget(dueContainer);
@@ -262,6 +261,7 @@ void TodoPage::setTodo(Todo* todo) {
         updateButton->show();
     } else {
         header->setText("Add new Todo");
+        dueEdit->setDateTime(QDateTime::currentDateTime().addDays(7));
         addButton->show();
         updateButton->hide();
     }

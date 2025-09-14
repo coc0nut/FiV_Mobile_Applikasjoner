@@ -30,7 +30,7 @@ void SideMenu::populateTodos(int user_id) {
             todoChild->setData(0, Qt::UserRole, QVariant::fromValue(static_cast<void*>(todo)));
         }
     }
-    todoItem->setExpanded(true);
+    todoItem->setExpanded(false);
 }
 
 void SideMenu::refreshTodos() {

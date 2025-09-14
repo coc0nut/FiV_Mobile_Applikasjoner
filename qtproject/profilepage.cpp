@@ -11,7 +11,7 @@ ProfilePage::ProfilePage(Database *db, User *user, QWidget *parent)
 
     setStyleSheet(QString(
             "background: %1; color: %2; border-radius: 8px;"
-        ).arg(bgColorDark, textColorDark)
+        ).arg(bgColorDark, textColorDark, bgColor, textColor)
     );
 
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -21,12 +21,78 @@ ProfilePage::ProfilePage(Database *db, User *user, QWidget *parent)
 
     // header
 
-    QLabel *header = new QLabel(user->username());
+    QLabel *header = new QLabel("Profile");
 
     header->setStyleSheet(QString(
         "font-size: 46px; font-weight: bold; background: %1; color: %2;"
     ).arg(bgColor, textColor));
 
+    // Set name and email
+
+    QVBoxLayout *userDetailsLayout = new QVBoxLayout();
+    userDetailsLayout->setSpacing(2);
+
+    QLabel *userDetailsTitle = new QLabel("Userdetails", this);
+    userDetailsTitle->setStyleSheet(QString("background: %1; color: %2; font-size: 23px; font-weight: bold;").arg(bgColorDark, textColorDark));
+    userDetailsLayout->addWidget(userDetailsTitle);
+
+    username = new QLabel("User: " + user->username());
+
+    userDetailsLayout->addWidget(username);
+
+    QHBoxLayout *nameLayout = new QHBoxLayout();
+
+    QLabel *name = new QLabel("Name: ", this);
+    nameLayout->addWidget(name);
+
+    nameEdit = new QLineEdit(user->name());
+    nameEdit->setStyleSheet(QString(
+        "background: %1; color: %2;"
+        "border-radius: 8px;"
+        "font-size: 18px;"
+        "padding: 10px;"
+    ).arg(bgColorDark, textColorDark));
+    nameEdit->setPlaceholderText("Enter your name");
+
+    nameLayout->addWidget(nameEdit);
+    userDetailsLayout->addLayout(nameLayout);
+
+    QHBoxLayout *emailLayout = new QHBoxLayout();
+
+    QLabel *email = new QLabel("Email: ", this);
+    emailLayout->addWidget(email);
+
+    emailEdit = new QLineEdit(user->email());
+    emailEdit->setStyleSheet(QString(
+        "background: %1; color: %2;"
+        "border-radius: 8px;"
+        "font-size: 18px;"
+        "padding: 10px;"
+        ).arg(bgColorDark, textColorDark));
+    emailEdit->setPlaceholderText("Enter your email");
+
+    emailLayout->addWidget(emailEdit);
+    userDetailsLayout->addLayout(emailLayout);
+
+    QWidget *userDetailsWidget = new QWidget(this);
+    userDetailsWidget->setLayout(userDetailsLayout);
+
+    QPushButton *changeUserDetailsButton = new QPushButton("Set details", this);
+    changeUserDetailsButton->setStyleSheet(QString("background: %1; color: %2;").arg(bgColor, textColor));
+    changeUserDetailsButton->setFixedHeight(40);
+
+    userDetailsLayout->addWidget(changeUserDetailsButton);
+    connect(changeUserDetailsButton, &QPushButton::clicked, this, [this]() {
+        this->user->setName(nameEdit->text());
+        this->user->setEmail(emailEdit->text());
+        if (this->db->updateUser(this->user)) {
+            emit userDetailsChanged();
+            QMessageBox::information(this, "Success", "Profile updated successfully.");
+        } else {
+            QMessageBox::warning(this, "Error", "Failed to update profile.");
+        }
+
+    });
 
     // changePassowrdLayout
 
@@ -81,7 +147,8 @@ ProfilePage::ProfilePage(Database *db, User *user, QWidget *parent)
 
         // Changed Password button
 
-    QPushButton *changePasswordButton = new QPushButton("Submit", this);
+    QPushButton *changePasswordButton = new QPushButton("Set password", this);
+    changePasswordButton->setStyleSheet(QString("background: %1; color: %2;").arg(bgColor, textColor));
     changePasswordButton->setFixedHeight(40);
 
     changePasswordLayout->addWidget(changePasswordButton);
@@ -92,9 +159,12 @@ ProfilePage::ProfilePage(Database *db, User *user, QWidget *parent)
     changePasswordWidget->setLayout(changePasswordLayout);
 
 
+    // Profile page layout
+
     profileLayout->setAlignment(Qt::AlignTop);
     profileLayout->setSpacing(2);
     profileLayout->addWidget(header);
+    profileLayout->addWidget(userDetailsWidget);
     profileLayout->addWidget(changePasswordWidget);
 
 }

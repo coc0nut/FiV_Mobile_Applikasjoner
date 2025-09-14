@@ -17,10 +17,12 @@ public:
 
     QFrame *createLine(QWidget *parent);
 
+
 public slots:
     void refreshTodos();
     void onEditButtonClicked();
     void onCompleteButtonClicked();
+    void refreshUserDetails();
 
 signals:
     void editTodoRequested(int todoId);

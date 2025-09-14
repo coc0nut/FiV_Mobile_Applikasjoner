@@ -38,10 +38,8 @@ HomePage::HomePage(Database *db, User *user, QWidget *parent) : QWidget{parent},
             Qt::SmoothTransformation
         ));
 
+
         userDetails = new QLabel("Username: " + user->username() + "\nName: " + user->name() + "\nEmail: " + user->email(), contentWidget);
-
-
-
 
         QWidget *profileCardWidget = new QWidget(contentWidget);
 
@@ -203,7 +201,7 @@ void HomePage::refreshTodos() {
             QVBoxLayout *todoItemLayout = new QVBoxLayout();
             todoItemLayout->setSpacing(1);
 
-            QLabel *title = new QLabel(QString::number(userTodos[i]->id()) + ". " + userTodos[i]->title(), contentWidget);
+            QLabel *title = new QLabel(QString::number(i + 1) + ". " + userTodos[i]->title(), contentWidget);
             title->setWordWrap(true);
             title->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
             title->setStyleSheet("font-weight: bold; font-size: 23px;");
@@ -243,7 +241,7 @@ void HomePage::refreshTodos() {
 
             QHBoxLayout *todoButtons = new QHBoxLayout();
             todoButtons->setSpacing(20);
-            int buttonHeight = 40;
+            int buttonHeight = 45;
             editButton = new QPushButton("Edit", this);
             editButton->setFixedHeight(buttonHeight);
             editButton->setStyleSheet(
@@ -327,4 +325,12 @@ QFrame *HomePage::createLine(QWidget *parent) {
     line->setFrameShape(QFrame::HLine);
     line->setFrameShadow(QFrame::Sunken);
     return line;
+}
+
+void HomePage::refreshUserDetails()
+{
+    userDetails->setText("Username: " + user->username()
+        + "\nName: " + user->name()
+        + "\nEmail: " + user->email());
+
 }

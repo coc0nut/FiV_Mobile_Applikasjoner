@@ -70,7 +70,6 @@ QString const Login::password() {
 
 
 void Login::onLoginClicked() {
-    qDebug() << "Raw password (as hex):" << password().toUtf8().toHex();
     QString hashed = db->hashPassword(password());
     if (db->checkUserCredentials(username(), hashed)) {
         accept();

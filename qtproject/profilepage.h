@@ -17,15 +17,15 @@ private slots:
     void onChangePasswordClicked();
 
 signals:
+    void userDetailsChanged();
 
 private:
     Database *db;
     User *user;
 
-    QLabel *chpasswd;
-    QLineEdit *oldPasswordEdit;
-    QLineEdit *newPasswordEdit;
-    QLineEdit *confirmPasswordEdit;
+    QLabel *chpasswd, *username;
+    QLineEdit *oldPasswordEdit, *newPasswordEdit, *confirmPasswordEdit;
+    QLineEdit *nameEdit, *emailEdit;
 
     QString bgColor {"#a6a6a6"}, textColor {"#393e46"};
     QString bgColorDark {"#393e46"}, textColorDark {"#f0ece2"};

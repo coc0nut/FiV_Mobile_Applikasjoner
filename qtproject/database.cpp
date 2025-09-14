@@ -65,14 +65,16 @@
 
         qDebug() << password;
 
-        query.prepare("SELECT id, username, password FROM users WHERE username = ? AND password = ?");
+        query.prepare("SELECT id, username, password, name, email FROM users WHERE username = ? AND password = ?");
         query.addBindValue(username);
         query.addBindValue(password);
 
         if (query.exec() && query.next()) {
-            user->setId(query.value(0).toInt());
-            user->setUsername(query.value(1).toString());
-            user->setPassword(query.value(2).toString());
+            user->setId(query.value("id").toInt());
+            user->setUsername(query.value("username").toString());
+            user->setPassword(query.value("password").toString());
+            user->setName(query.value("name").toString());
+            user->setEmail(query.value("email").toString());
             return true;
         }
 
@@ -105,23 +107,29 @@
 
     bool Database::updateUser(User *user)
     {
-        QSqlQuery query;
+        try {
+            QSqlQuery query;
 
-        query.prepare(
-            "update users set "
-            "username = ?, "
-            "password = ?, "
-            "name = ?, "
-            "email = ? "
-            "where id = ?"
+            query.prepare(
+                "update users set "
+                "username = ?, "
+                "password = ?, "
+                "name = ?, "
+                "email = ? "
+                "where id = ?"
             );
-        query.addBindValue(user->username());
-        query.addBindValue(user->password());
-        query.addBindValue(user->name());
-        query.addBindValue(user->email());
-        query.addBindValue(user->id());
+            query.addBindValue(user->username());
+            query.addBindValue(user->password());
+            query.addBindValue(user->name());
+            query.addBindValue(user->email());
+            query.addBindValue(user->id());
 
-        if (!query.exec()) {
+            if (!query.exec()) {
+                qDebug() << "Database::updateUser failed:" << query.lastError().text();
+                return false;
+            }
+        } catch (std::exception const &e) {
+            qDebug() << "Exception in Database::updateUser:" << e.what();
             return false;
         }
 
@@ -142,8 +150,11 @@
             while (query.next()) {
                 User *user = new User(this);
                 user->setId(query.value(0).toInt());
-                user->setUsername(query.value(1).toString());
-                user->setPassword(query.value(2).toString());
+                user->setUsername(query.value("username").toString());
+                user->setPassword(query.value("password").toString());
+                user->setName(query.value("name").toString());
+                user->setEmail(query.value("email").toString());
+                qDebug() << "Email: " << user->email();
                 User::users.push_back(user);
             }
             return true;

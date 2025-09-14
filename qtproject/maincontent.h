@@ -6,6 +6,9 @@
 #include "user.h"
 #include "todo.h"
 #include "sidemenu.h"
+#include "todopage.h"
+#include "homepage.h"
+#include "profilepage.h"
 
 class MainContent : public QStackedWidget
 {
@@ -23,7 +26,10 @@ signals:
     void todosChanged();
 
 private:
-    QWidget *m_homePage, *m_profilePage, *m_settingsPage, *m_todoPage;
+    HomePage *m_homePage;
+    ProfilePage *m_profilePage;
+    QWidget *m_settingsPage;
+    TodoPage *m_todoPage;
     Database *db;
     User *user;
     Todo *todo;

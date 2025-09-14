@@ -1,7 +1,5 @@
 #include "maincontent.h"
-#include "todopage.h"
-#include "homepage.h"
-#include "profilepage.h"
+
 
 #include <QWidget>
 
@@ -23,6 +21,8 @@ MainContent::MainContent(Database *db, User *user, Todo *todo, SideMenu *sideMen
     // forward signal todo change signal maincontent -> mainwindow
     connect(m_todoPage, SIGNAL(todosChanged()), this, SIGNAL(todosChanged()));
     connect(m_todoPage, SIGNAL(navigateToHomePage()), this, SLOT(showHomePage()));
+
+    connect(m_profilePage, &ProfilePage::userDetailsChanged, m_homePage, &HomePage::refreshUserDetails);
 }
 
 QWidget* MainContent::homePage() { return m_homePage; }
