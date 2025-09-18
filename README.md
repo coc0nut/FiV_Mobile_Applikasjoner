@@ -27,6 +27,9 @@ Gjørelistene skal struktureres i sidemeny slik at de enkelt kan velges og redig
 
 Det skal også være en hoved side hvor gjøremålene vises med frist.
 
+## Notater
+
+- bgColor, textColor skulle hatt disse på 1 sted.
 
 ### Huskeliste:
 
@@ -34,6 +37,10 @@ Det skal også være en hoved side hvor gjøremålene vises med frist.
 2. Rette på new account knapp.
 
 ### Logg:
+- 18.09.25
+  Satte i gang med dokumentasjon og tegner opp klasse diagram.
+  Føre opp notater og bemerkninger.
+
 - Periode: 05.09.25 - 09.09.25
   Gjorde meg kjent med strukturen i programmet,
   hvor jeg har rotet meg litt bort i forhold til sammenhengen mellom sidemenu og maincontent.

@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     QFont appFont("Calibri");
-    QApplication::setFont(appFont);
+    a.setFont(appFont);
 
     User user;
     Todo todo;
