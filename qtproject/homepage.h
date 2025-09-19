@@ -33,6 +33,7 @@ private:
 
     Database *db;
     User *user;
+    Todo *todo;
     QLabel *userDetails;
     QLabel *bilde;
 

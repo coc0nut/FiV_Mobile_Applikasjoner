@@ -136,7 +136,7 @@ void HomePage::refreshTodos() {
     });
 
     for (int i = 0; i < userTodos.length(); i++) {
-        Todo *todo = userTodos[i];
+        todo = userTodos[i];
         int todoId = todo->id();
 
         // Format DateTime strings
@@ -267,8 +267,8 @@ void HomePage::refreshTodos() {
                     .arg(btnBgColor, btnTextColor)
                 );
 
-            connect(completeButton, &QPushButton::clicked, this, [this,  todo]() {
-                todo->setCompleted(1);
+            connect(completeButton, &QPushButton::clicked, this, [this]() {
+                this->todo->setCompleted(1);
                 db->updateTodo(todo);
                 refreshTodos();
             });
