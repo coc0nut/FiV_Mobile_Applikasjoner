@@ -101,7 +101,7 @@ HomePage::HomePage(Database *db, User *user, QWidget *parent) : QWidget{parent},
         scrollArea->setWidget(contentWidget);
         scrollArea->setStyleSheet(
             "QScrollArea { border: none; }"
-            "QScrollBar { border: none; background: transparent; }"
+            "QScrollBar { border: none; }"
             "QScrollArea > QWidget { border: none; }"
         );
 
@@ -305,7 +305,6 @@ void HomePage::refreshTodos() {
         }
 
 }
-
 
 
 void HomePage::onEditButtonClicked()

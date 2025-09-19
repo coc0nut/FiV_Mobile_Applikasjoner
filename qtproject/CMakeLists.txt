@@ -34,6 +34,7 @@ qt_add_executable(qtproject
     ${PROJECT_SOURCES}
     ${PROJECT_RESOURCES}
     profilepage.h profilepage.cpp
+    styles.h styles.cpp
 )
 
 target_link_libraries(qtproject PRIVATE Qt6::Widgets Qt6::Core Qt6::Sql)

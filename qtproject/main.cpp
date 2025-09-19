@@ -3,6 +3,7 @@
 #include "login.h"
 #include "user.h"
 #include "todo.h"
+#include "styles.h"
 
 #include <QApplication>
 
@@ -13,6 +14,9 @@ int main(int argc, char *argv[])
 
     QFont appFont("Calibri");
     a.setFont(appFont);
+
+    Styles styles;
+    a.setStyleSheet(styles.globalStyle());
 
     User user;
     Todo todo;
