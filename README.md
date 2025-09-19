@@ -8,9 +8,9 @@
 
 ## Oppgavebeskrivelse
 
-### Tverrspråkelig Prosjektoppgave - Avansert Qt-Applikasjon
+# Tverrspråkelig Prosjektoppgave - Avansert Qt-Applikasjon
 
-- Mål
+## Mål
   
   Studentene skal utvikle en applikasjon for hverdagsbruk (f.eks handleliste, oppgaveplanlegger, budsjett-app, treningslogg, notatbok).
 
@@ -24,7 +24,7 @@
   3. Java (Qt Jambi)
   4. etc...
 
-- Minimumskrav (grunnlag)
+## Minimumskrav (grunnlag)
 
   1. **GUI med Qt Widgets**
      1. Bruk QMainWindow eller QWidget med knapper, tekstfelst, tabeller/lister.
@@ -39,7 +39,7 @@
      1. Brukeren skal kunne legge inn, endre og slette data.
      2. Data skal kunne vises oversiktiglig (liste/tabell).
 
-- Utvidede krav (avansert nivå)
+## Utvidede krav (avansert nivå)
   
 1. **Database**
    1. Migrer fra enkel fil til SQLite (via QSqlDatabase og QSqlTableModel)
@@ -84,19 +84,14 @@ Gjørelistene skal struktureres i sidemeny slik at de enkelt kan velges og redig
 
 Det skal også være en hoved side hvor gjøremålene vises med frist. Filtrert med nærmeste frist først.
 
----
-
 ## Notater
 
 - bgColor, textColor skulle hatt disse på 1 sted. (QSS)
-  
 
 ## Huskeliste:
 
 1. Kryptere passord
 2. Rette på new account knapp.
-
----
 
 ## Logg:
 - 19.09.25
