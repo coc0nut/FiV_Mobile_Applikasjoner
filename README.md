@@ -1,16 +1,10 @@
 # Mobile Applikasjoner - Arbeidskrav
 
-
-
 ## Note.io
-
-
-
-## Oppgavebeskrivelse
 
 # Tverrspråkelig Prosjektoppgave - Avansert Qt-Applikasjon
 
-## Mål
+## Oppgavebeskrivelse og mål
   
   Studentene skal utvikle en applikasjon for hverdagsbruk (f.eks handleliste, oppgaveplanlegger, budsjett-app, treningslogg, notatbok).
 
