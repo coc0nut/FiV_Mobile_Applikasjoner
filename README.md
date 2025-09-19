@@ -1,10 +1,10 @@
 # Mobile Applikasjoner - Arbeidskrav
 
----
+
 
 ## Note.io
 
----
+
 
 ## Oppgavebeskrivelse
 
@@ -65,9 +65,8 @@
    2. Versjonskontroll med Git.
    3. Enhetstesting (QTest i C++, pytest-qt i Python og JUnit i Java).
 
----
 
-### Planlegging:
+## Planlegging:
 
 Lage en gjøreliste app. Kalles Note.io.
 
@@ -91,16 +90,15 @@ Det skal også være en hoved side hvor gjøremålene vises med frist. Filtrert 
 
 - bgColor, textColor skulle hatt disse på 1 sted. (QSS)
   
----
 
-### Huskeliste:
+## Huskeliste:
 
 1. Kryptere passord
 2. Rette på new account knapp.
 
 ---
 
-### Logg:
+## Logg:
 - 19.09.25
   Ferdigstilte klassediagrammet, og tenker å lage use case diagrammer og flyt skjema.
 
