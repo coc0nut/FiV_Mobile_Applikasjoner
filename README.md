@@ -71,7 +71,6 @@ Den skal inneholde:
 3. Innlogging
 4. Representere gjørelister på en ryddig måte
 5. Kunne redigere, slette og legge til gjørelister
-6. 
 
 Brukeren skal kunne opprette nye, redigere eksisterende og slette gjørelister.
 Gjørelistene skal struktureres i sidemeny slik at de enkelt kan velges og redigeres.
@@ -84,8 +83,14 @@ Det skal også være en hoved side hvor gjøremålene vises med frist. Filtrert 
 
 ## Huskeliste:
 
-1. Kryptere passord
-2. Rette på new account knapp.
+1. Rette på new account knapp.
+
+## Veien videre
+
+Videre tenker jeg at kan appen kan utvikles i en veldig vid horisont.
+personlig tenker jeg at jeg kan legge til hva som helst.
+F.eks en subnet kalkulator og diverse arbeids verktøy / tooling.
+Hvis jeg gjør appen skybasert kan jo enhel del nye ting også implementeres.
 
 ## Logg:
 - 19.09.25
