@@ -87,9 +87,9 @@ Det skal også være en hoved side hvor gjøremålene vises med frist. Filtrert 
 
 ## Veien videre
 
-Videre tenker jeg at kan appen kan utvikles i en veldig vid horisont.
-personlig tenker jeg at jeg kan legge til hva som helst.
-F.eks en subnet kalkulator og diverse arbeids verktøy / tooling.
+Videre tenker jeg at applikasjonen kan utvikles i en veldig vid horisont.
+Personlig tenker jeg at jeg kan legge til hva som helst.
+F.eks en subnet kalkulator, passord generator og diverse arbeids verktøy / tooling.
 Hvis jeg gjør appen skybasert kan jo enhel del nye ting også implementeres.
 
 ## Logg:
