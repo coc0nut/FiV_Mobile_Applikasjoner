@@ -87,10 +87,32 @@ HomePage::HomePage(Database *db, User *user, QWidget *parent) : QWidget{parent},
 
         //homePageLayout->addWidget(createLine(contentWidget));
 
+
+        // Counter
+        auto *counter = new QHBoxLayout();
+        counter->setAlignment(Qt::AlignHCenter);
+        counter->setSpacing(500);
+
+        completedCounts = new QLabel("Completed todos: " + QString::number(completedCount));
+        activeCounts = new QLabel("Active todos: " + QString::number(activeCount));
+        totalCounts = new QLabel("Total todos: " + QString::number(totalCount));
+        completedCounts->setObjectName("counterLabel");
+        activeCounts->setObjectName("counterLabel");
+        totalCounts->setObjectName("counterLabel");
+
+        counter->addWidget(activeCounts);
+        counter->addWidget(completedCounts);
+        counter->addWidget(totalCounts);
+
+        homePageLayout->addLayout(counter);
+
     // Todos Layout
         todoLayout = new QVBoxLayout();
         todoLayout->setSpacing(20);
         homePageLayout->addLayout(todoLayout);
+
+
+
         refreshTodos();
         
 
@@ -119,12 +141,20 @@ void HomePage::refreshTodos() {
         }
         delete child;
     }
+    completedCount = 0;
+    activeCount = 0;
+    totalCount = 0;
 
     QVector<Todo*> userTodos;
 
     for (Todo* t: Todo::todos) {
         if (t->user_id() == user->id()) {
-
+            if (t->completed()) {
+                completedCount++;
+            } else {
+                activeCount++;
+            }
+            totalCount++;
             userTodos.append(t);
         }
     }
@@ -156,10 +186,6 @@ void HomePage::refreshTodos() {
         QTimer *flashTimer = nullptr;
 
         if (!todo->completed() && dueDT > QDateTime::currentDateTime() ) {
-
-
-
-
 
             if (daysToDue >= 0 && daysToDue < 3) {
                 alertSquare = new QWidget(contentWidget);
@@ -196,6 +222,8 @@ void HomePage::refreshTodos() {
                 flashTimer->start(500);
 
             }
+
+
 
 
             QVBoxLayout *todoItemLayout = new QVBoxLayout();
@@ -300,9 +328,12 @@ void HomePage::refreshTodos() {
 
             todoLayout->addWidget(todoWidget);
             todoLayout->addWidget(createLine(this));
-            }
-
         }
+        activeCounts->setText("Active todos: " + QString::number(activeCount));
+        completedCounts->setText("Completed todos: " + QString::number(completedCount));
+        totalCounts->setText("Total todos: " + QString::number(totalCount));
+
+    }
 
 }
 

@@ -19,5 +19,9 @@ QString Styles::globalStyle() const {
             background: %1;
             color: %2;
         }
+        QLabel#counterLabel {
+            font-size: 20px;
+            font-weight: bold;
+        }
     )").arg(bgColor, textColor, bgColorDark, textColorDark);
 }

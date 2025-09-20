@@ -93,6 +93,9 @@ F.eks en subnet kalkulator, passord generator og diverse arbeids verktøy / tool
 Hvis jeg gjør appen skybasert kan jo enhel del nye ting også implementeres.
 
 ## Logg:
+- 20.09.25
+  Implementerte statistikk som teller brukerens fullførte todos, aktive todos, og totalt antall todos...
+  
 - 19.09.25
   Ferdigstilte klassediagrammet, og tenker å lage use case diagrammer og flyt skjema.
 

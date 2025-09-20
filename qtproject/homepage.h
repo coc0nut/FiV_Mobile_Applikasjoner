@@ -34,6 +34,10 @@ private:
     Database *db;
     User *user;
     Todo *todo;
+
+    int completedCount {0}, activeCount {0}, totalCount {0};
+    QLabel *completedCounts, *activeCounts, *totalCounts;
+
     QLabel *userDetails;
     QLabel *bilde;
 
