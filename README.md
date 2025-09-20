@@ -36,27 +36,27 @@
 ## Utvidede krav (avansert nivå)
   
 1. **Database**
-   1. Migrer fra enkel fil til SQLite (via QSqlDatabase og QSqlTableModel)
+   1. Migrer fra enkel fil til SQLite (via QSqlDatabase og QSqlTableModel) [FULLFØRT]
    2. Implenenter søk og filtrering
    3. Støtt import/eksport (csv, json, xml).
 2. **GUI og brukeropplevelse**
-   1. Flere vinduer eller faner (QTabWidget)
-   2. Innstillinger/Preferanser lagret i QSettings
+   1. Flere vinduer eller faner (QTabWidget) [FULLFØRT]
+   2. Innstillinger/Preferanser lagret i QSettings [FULLFØRT]
    3. Tema (lys/mørk) modus med Qt Style Sheets (QSS)
-   4. Dra-og-slipp og kontekst menyer
+   4. Dra-og-slipp og kontekst menyer 
 3. **Statistikk og visualisering**
    1. Vis grafer (QtCharts, Matplotlib Python, etc.)
-   2. Statistikk: summeringer, fordelinger og tidslinjer.
+   2. Statistikk: summeringer, fordelinger og tidslinjer. [FULLFØRT]
 4. **Avansert funksjonalitet**
-   1. Timer/varsling med QTimer.
+   1. Timer/varsling med QTimer. [FULLFØRT]
    2. Multithreading for tunge operasoner (QThread / QtConcurrent)
    3. Nettverk (REST API via QNetworkAccessManager - f.eks synkronisering med server)
 5. **Brukerstøtte**
-   1. Innlogging med brukere/roller.
-   2. Egne data for hver bruker.
+   1. Innlogging med brukere/roller. [FULLFØRT]
+   2. Egne data for hver bruker. [FULLFØRT]
 6. **Profesjonelle krav**
    1. Dokumentasjon (README/manual)
-   2. Versjonskontroll med Git.
+   2. Versjonskontroll med Git. [FULLFØRT]
    3. Enhetstesting (QTest i C++, pytest-qt i Python og JUnit i Java).
 
 
@@ -95,7 +95,7 @@ Hvis jeg gjør appen skybasert kan jo enhel del nye ting også implementeres.
 ## Logg:
 - 20.09.25
   Implementerte statistikk som teller brukerens fullførte todos, aktive todos, og totalt antall todos...
-  
+
 - 19.09.25
   Ferdigstilte klassediagrammet, og tenker å lage use case diagrammer og flyt skjema.
 
