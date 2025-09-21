@@ -4,6 +4,7 @@
         "thread": "cpp",
         "numbers": "cpp",
         "format": "cpp",
-        "new": "cpp"
+        "new": "cpp",
+        "random": "cpp"
     }
 }

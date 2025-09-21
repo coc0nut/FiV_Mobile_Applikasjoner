@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QLineEdit>
 
 #include "database.h"
 #include "user.h"
@@ -17,18 +18,16 @@ public:
 
     QFrame *createLine(QWidget *parent);
 
-
 public slots:
     void refreshTodos();
     void onEditButtonClicked();
     void onCompleteButtonClicked();
     void refreshUserDetails();
+    void onSearchTextChanged(const QString &text);
 
 signals:
     void editTodoRequested(int todoId);
     
-
-
 private:
 
     Database *db;
@@ -36,11 +35,14 @@ private:
     Todo *todo;
 
     int completedCount {0}, activeCount {0}, totalCount {0};
+
     QLabel *completedCounts, *activeCounts, *totalCounts;
+
+    QString searchString;
+    QLineEdit *searchTextEdit;
 
     QLabel *userDetails;
     QLabel *bilde;
-
 
     QLabel *title;
     QLabel *text;
@@ -50,7 +52,6 @@ private:
 
     QPushButton *editButton, *completeButton;
 
-
     QString bgColor {"#a6a6a6"}, textColor {"#393e46"};
     QString bgColorDark {"#393e46"}, textColorDark {"#f0ece2"};
     QString btnBgColor {"#393e46"}, btnTextColor {"#f0ece2"};
@@ -58,6 +59,7 @@ private:
     QWidget *contentWidget;
     QVBoxLayout *homePageLayout;
     QVBoxLayout *todoLayout;
+
 
 };
 

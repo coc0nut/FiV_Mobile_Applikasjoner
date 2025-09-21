@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <QDateTime>
 #include <QTextEdit>
+
 #include <QTimer>
 #include "todo.h"
 
@@ -25,6 +26,8 @@ HomePage::HomePage(Database *db, User *user, QWidget *parent) : QWidget{parent},
     homePageLayout->setAlignment(Qt::AlignTop);
     homePageLayout->setSpacing(20);
     homePageLayout->setContentsMargins(8, 8, 8, 8);
+
+
 
     // Profile Card
 
@@ -88,6 +91,7 @@ HomePage::HomePage(Database *db, User *user, QWidget *parent) : QWidget{parent},
         //homePageLayout->addWidget(createLine(contentWidget));
 
 
+
         // Counter
         auto *counter = new QHBoxLayout();
         counter->setAlignment(Qt::AlignHCenter);
@@ -105,6 +109,24 @@ HomePage::HomePage(Database *db, User *user, QWidget *parent) : QWidget{parent},
         counter->addWidget(totalCounts);
 
         homePageLayout->addLayout(counter);
+
+        homePageLayout->addWidget(createLine(this));
+
+        // Searchtext
+        auto *searchTextLayout = new QHBoxLayout();
+        searchTextLayout->setAlignment(Qt::AlignLeft);
+
+        searchTextEdit = new QLineEdit();
+        searchTextEdit->setFixedWidth(350);
+        searchTextEdit->setObjectName("searchTextEdit");
+        searchTextEdit->setPlaceholderText("Search todos");
+        searchTextEdit->setStyleSheet(QString("background: %1; color: %2; border-radius: 8px; border: none;").arg(bgColorDark, textColorDark));
+        //searchTextEdit->setStyleSheet(QString("background: %1; color: %2; border-radius: 8px; border: none;").arg(bgColorDark, textColorDark));
+
+        connect(searchTextEdit, &QLineEdit::textChanged, this, &HomePage::onSearchTextChanged);
+
+        searchTextLayout->addWidget(searchTextEdit);
+        homePageLayout->addLayout(searchTextLayout);
 
     // Todos Layout
         todoLayout = new QVBoxLayout();
@@ -148,14 +170,30 @@ void HomePage::refreshTodos() {
     QVector<Todo*> userTodos;
 
     for (Todo* t: Todo::todos) {
+
         if (t->user_id() == user->id()) {
+            
+             if (!searchString.isEmpty()) {
+                
+                if (t->title().contains(searchString, Qt::CaseInsensitive)) {
+                     userTodos.append(t);
+                } else if (t->text().contains(searchString, Qt::CaseInsensitive)) {
+                    userTodos.append(t);
+                }
+                 
+            } else {
+                userTodos.append(t);
+            }
+
+
             if (t->completed()) {
                 completedCount++;
             } else {
                 activeCount++;
             }
             totalCount++;
-            userTodos.append(t);
+
+           
         }
     }
 
@@ -363,4 +401,9 @@ void HomePage::refreshUserDetails()
         + "\nName: " + user->name()
         + "\nEmail: " + user->email());
 
+}
+
+void HomePage::onSearchTextChanged(const QString &text) {
+    searchString = text;
+    refreshTodos();
 }

@@ -23,5 +23,9 @@ QString Styles::globalStyle() const {
             font-size: 20px;
             font-weight: bold;
         }
+        QLineEdit {
+            "border-radius: 5px;
+            "border: none"
+        }
     )").arg(bgColor, textColor, bgColorDark, textColorDark);
 }
