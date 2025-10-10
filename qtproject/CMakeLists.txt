@@ -9,8 +9,10 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets Core Sql)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Core Sql Network)
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Core)
 
 set(PROJECT_SOURCES
     main.cpp
@@ -35,9 +37,13 @@ qt_add_executable(qtproject
     ${PROJECT_RESOURCES}
     profilepage.h profilepage.cpp
     styles.h styles.cpp
+    calendarpanel.h calendarpanel.cpp
+    networkmanager.h networkmanager.cpp
 )
 
-target_link_libraries(qtproject PRIVATE Qt6::Widgets Qt6::Core Qt6::Sql)
+target_link_libraries(qtproject PRIVATE Qt6::Widgets Qt6::Core Qt6::Sql Qt6::Network)
+target_link_libraries(qtproject PRIVATE Qt6::Widgets)
+target_link_libraries(qtproject PRIVATE Qt6::Core)
 
 set_target_properties(qtproject PROPERTIES
     MACOSX_BUNDLE TRUE

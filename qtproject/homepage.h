@@ -6,17 +6,25 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QLineEdit>
+#include <QCalendarWidget>
+#include <QListWidget>
+#include <QDate>
 
 #include "database.h"
 #include "user.h"
+#include "calendarpanel.h"
+#include "networkmanager.h"
+
 
 class HomePage : public QWidget {
     Q_OBJECT
 
 public:
-    explicit HomePage(Database *db, User *user, QWidget *parent = nullptr);
+    explicit HomePage(NetworkManager *net, Database *db, User *user, QWidget *parent = nullptr);
 
     QFrame *createLine(QWidget *parent);
+
+
 
 public slots:
     void refreshTodos();
@@ -27,12 +35,16 @@ public slots:
 
 signals:
     void editTodoRequested(int todoId);
-    
+
 private:
 
+    NetworkManager *net;
     Database *db;
     User *user;
     Todo *todo;
+    QMap<QDate, QVector<Todo*>> todosByDate;
+    QDate dateFilter;
+    CalendarPanel *calendarPanel;
 
     int completedCount {0}, activeCount {0}, totalCount {0};
 
@@ -41,17 +53,14 @@ private:
     QString searchString;
     QLineEdit *searchTextEdit;
 
-    QLabel *userDetails;
-    QLabel *bilde;
+    // profile
+    QLabel *userDetails, *bilde;
 
-    QLabel *title;
-    QLabel *text;
-    QLabel *created_on;
-    QLabel *updated_on;
-    QLabel *due;
-
+    // Todo
+    QLabel *title, *text, *created_on, *updated_on, *due;
     QPushButton *editButton, *completeButton;
 
+    // CSS -- QSS
     QString bgColor {"#a6a6a6"}, textColor {"#393e46"};
     QString bgColorDark {"#393e46"}, textColorDark {"#f0ece2"};
     QString btnBgColor {"#393e46"}, btnTextColor {"#f0ece2"};
@@ -60,6 +69,7 @@ private:
     QVBoxLayout *homePageLayout;
     QVBoxLayout *todoLayout;
 
+private slots:
 
 };
 

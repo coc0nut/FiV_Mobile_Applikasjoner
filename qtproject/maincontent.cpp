@@ -3,13 +3,13 @@
 
 #include <QWidget>
 
-MainContent::MainContent(Database *db, User *user, Todo *todo, SideMenu *sideMenu, QWidget *parent)
-    : QStackedWidget{parent}, db(db), user(user), todo(todo), sideMenu(sideMenu)
+MainContent::MainContent(NetworkManager *net, Database *db, User *user, Todo *todo, SideMenu *sideMenu, QWidget *parent)
+    : QStackedWidget{parent}, db(db), user(user), todo(todo), sideMenu(sideMenu), net(net)
 {
-    m_homePage = new HomePage(db, user, this);
-    m_profilePage = new ProfilePage(db, user, this);
+    m_homePage = new HomePage(net, db, user, this);
+    m_profilePage = new ProfilePage(net, db, user, this);
     m_settingsPage = new QWidget(this);
-    m_todoPage = new TodoPage(db, user, todo, this);
+    m_todoPage = new TodoPage(net, db, user, todo, this);
 
 
 

@@ -3,15 +3,17 @@
 
 #include <QWidget>
 #include <QLineEdit>
+#include <QPushButton>
 #include <QLabel>
 #include "database.h"
 #include "user.h"
+#include "networkmanager.h"
 
 class ProfilePage : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ProfilePage(Database *db, User *user, QWidget *parent = nullptr);
+    explicit ProfilePage(NetworkManager *net, Database *db, User *user, QWidget *parent = nullptr);
 
 private slots:
     void onChangePasswordClicked();
@@ -21,15 +23,18 @@ signals:
 
 private:
     Database *db;
+    NetworkManager *net;
     User *user;
 
-    QLabel *chpasswd, *username;
+    QLabel *chpasswd, *username, *firstName, *lastName;
     QLineEdit *oldPasswordEdit, *newPasswordEdit, *confirmPasswordEdit;
-    QLineEdit *nameEdit, *emailEdit;
+    QLineEdit *first_nameEdit, *last_nameEdit, *emailEdit;
 
     QString bgColor {"#a6a6a6"}, textColor {"#393e46"};
     QString bgColorDark {"#393e46"}, textColorDark {"#f0ece2"};
     QString btnBgColor {"#393e46"}, btnTextColor {"#f0ece2"};
+
+    QPushButton *changeUserDetailsButton;
 };
 
 #endif // PROFILEPAGE_H

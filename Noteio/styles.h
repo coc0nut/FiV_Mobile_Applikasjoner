@@ -27,11 +27,11 @@ signals:
 
 private:
     QString bgColor {"#a6a6a6"},
-        textColor {"#393e46"},
-        bgColorDark {"#393e46"},
-        textColorDark {"#f0ece2"},
-        btnBgColor {"#393e46"},
-        btnTextColor {"#f0ece2"};
+            textColor {"#393e46"},
+            bgColorDark {"#393e46"},
+            textColorDark {"#f0ece2"},
+            btnBgColor {"#393e46"},
+            btnTextColor {"#f0ece2"};
 
 };
 

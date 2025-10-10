@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 
-#include "maincontent.h"
 #include "todopage.h"
 #include "homepage.h"
 #include "./ui_mainwindow.h"
@@ -16,8 +15,8 @@
 #include <QAction>
 #include <QPalette>
 
-MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
-    : QMainWindow(parent), db(db), user(user), todo(todo), ui(new Ui::MainWindow) {
+MainWindow::MainWindow(NetworkManager *net, Database *db, User *user, Todo *todo, QWidget *parent)
+    : QMainWindow(parent), net(net), db(db), user(user), todo(todo), ui(new Ui::MainWindow) {
 
     ui->setupUi(this);
     newTodo = new Todo(this);
@@ -101,7 +100,7 @@ MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
 
 
         // Main content area
-            MainContent *mainContent = new MainContent(db, user, todo, sideMenu, central);
+            mainContent = new MainContent(net, db, user, todo, sideMenu, central);
             mainContent->setStyleSheet(
                 QString(
                     "background: %1;"
@@ -113,7 +112,7 @@ MainWindow::MainWindow(Database *db, User *user, Todo *todo, QWidget *parent)
 
     // Connections
         // Sidemenu to main content area
-        connect(sideMenu, &QTreeWidget::currentItemChanged, this, [this, mainContent](QTreeWidgetItem *current) {
+        connect(sideMenu, &QTreeWidget::currentItemChanged, this, [this](QTreeWidgetItem *current) {
             if (current == this->sideMenu->homeItem)
                 mainContent->setCurrentIndex(0);
             // Profile page

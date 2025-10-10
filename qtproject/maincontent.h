@@ -2,6 +2,7 @@
 #define MAINCONTENT_H
 
 #include <QStackedWidget>
+#include "networkmanager.h"
 #include "database.h"
 #include "user.h"
 #include "todo.h"
@@ -14,7 +15,7 @@ class MainContent : public QStackedWidget
 {
     Q_OBJECT
 public:
-    explicit MainContent(Database *db, User *user, Todo *todo, SideMenu *sideMenu, QWidget *parent = nullptr);
+    explicit MainContent(NetworkManager *net, Database *db, User *user, Todo *todo, SideMenu *sideMenu, QWidget *parent = nullptr);
 
     QWidget *homePage(), *profilePage(), *settingsPage(), *todoPage();
 
@@ -30,6 +31,8 @@ private:
     ProfilePage *m_profilePage;
     QWidget *m_settingsPage;
     TodoPage *m_todoPage;
+
+    NetworkManager *net;
     Database *db;
     User *user;
     Todo *todo;

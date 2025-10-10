@@ -93,6 +93,9 @@ F.eks en subnet kalkulator, passord generator og diverse arbeids verktøy / tool
 Hvis jeg gjør appen skybasert kan jo enhel del nye ting også implementeres.
 
 ## Logg:
+- 09.10.25
+  Started å migrere til Rest-API
+  
 - 20.09.25
   Implementerte statistikk som teller brukerens fullførte todos, aktive todos, og totalt antall todos...
 

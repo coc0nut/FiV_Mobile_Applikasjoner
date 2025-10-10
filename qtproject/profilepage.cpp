@@ -4,14 +4,14 @@
 #include <QPushButton>
 #include <QMessageBox>
 
-ProfilePage::ProfilePage(Database *db, User *user, QWidget *parent)
-    : QWidget{parent}, db(db), user(user)
+ProfilePage::ProfilePage(NetworkManager *net, Database *db, User *user, QWidget *parent)
+    : QWidget{parent}, db(db), user(user), net(net)
 {
     // Properties
 
     setStyleSheet(QString(
             "background: %1; color: %2; border-radius: 8px;"
-        ).arg(bgColorDark, textColorDark, bgColor, textColor)
+        ).arg(bgColorDark, textColorDark)
     );
 
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -37,25 +37,43 @@ ProfilePage::ProfilePage(Database *db, User *user, QWidget *parent)
     userDetailsLayout->addWidget(userDetailsTitle);
 
     username = new QLabel("User: " + user->username());
+    firstName = new QLabel("First name: " + user->first_name());
+    lastName = new QLabel("Last name: " + user->last_name());
 
     userDetailsLayout->addWidget(username);
 
-    QHBoxLayout *nameLayout = new QHBoxLayout();
 
-    QLabel *name = new QLabel("Name: ", this);
-    nameLayout->addWidget(name);
+    QHBoxLayout *first_nameLayout = new QHBoxLayout();
+    QLabel *first_name = new QLabel("First name: ", this);
+    first_nameLayout->addWidget(first_name);
 
-    nameEdit = new QLineEdit(user->name());
-    nameEdit->setStyleSheet(QString(
+    first_nameEdit = new QLineEdit(user->first_name());
+    first_nameEdit->setStyleSheet(QString(
         "background: %1; color: %2;"
         "border-radius: 8px;"
         "font-size: 18px;"
         "padding: 10px;"
     ).arg(bgColorDark, textColorDark));
-    nameEdit->setPlaceholderText("Enter your name");
+    first_nameEdit->setPlaceholderText("Enter your first name");
 
-    nameLayout->addWidget(nameEdit);
-    userDetailsLayout->addLayout(nameLayout);
+    first_nameLayout->addWidget(first_nameEdit);
+    userDetailsLayout->addLayout(first_nameLayout);
+
+    QHBoxLayout *last_nameLayout = new QHBoxLayout();
+    QLabel *last_name = new QLabel("Last name: ", this);
+    last_nameLayout->addWidget(last_name);
+
+    last_nameEdit = new QLineEdit(user->last_name());
+    last_nameEdit->setStyleSheet(QString(
+        "background: %1; color: %2;"
+        "border-radius: 8px;"
+        "font-size: 18px;"
+        "padding: 10px;"
+    ).arg(bgColorDark, textColorDark));
+    last_nameEdit->setPlaceholderText("Enter your last name");
+
+    last_nameLayout->addWidget(last_nameEdit);
+    userDetailsLayout->addLayout(last_nameLayout);
 
     QHBoxLayout *emailLayout = new QHBoxLayout();
 
@@ -77,22 +95,39 @@ ProfilePage::ProfilePage(Database *db, User *user, QWidget *parent)
     QWidget *userDetailsWidget = new QWidget(this);
     userDetailsWidget->setLayout(userDetailsLayout);
 
-    QPushButton *changeUserDetailsButton = new QPushButton("Set details", this);
+    changeUserDetailsButton = new QPushButton("Set details", this);
     changeUserDetailsButton->setStyleSheet(QString("background: %1; color: %2;").arg(bgColor, textColor));
     changeUserDetailsButton->setFixedHeight(40);
 
     userDetailsLayout->addWidget(changeUserDetailsButton);
     connect(changeUserDetailsButton, &QPushButton::clicked, this, [this]() {
-        this->user->setName(nameEdit->text());
-        this->user->setEmail(emailEdit->text());
-        if (this->db->updateUser(this->user)) {
-            emit userDetailsChanged();
-            QMessageBox::information(this, "Success", "Profile updated successfully.");
+        QString firstName = first_nameEdit->text();
+        QString lastName = last_nameEdit->text();
+        QString email = emailEdit->text();
+
+
+
+        if (this->net->updateCurrentUser(firstName, lastName, email)) {
+            this->user->setFirst_name(firstName);
+            this->user->setLast_name(lastName);
+            this->user->setEmail(email);
         } else {
-            QMessageBox::warning(this, "Error", "Failed to update profile.");
+            QMessageBox::warning(this, "Error", "Failed to start update request.");
         }
 
     });
+
+    connect(net, &NetworkManager::currentUserUpdated, this, [this](const QJsonObject &obj) {
+        changeUserDetailsButton->setEnabled(true);
+        emit userDetailsChanged();  // Emit signal to notify other components
+        QMessageBox::information(this, "Success", "Profile updated successfully.");
+    });
+
+    connect(net, &NetworkManager::currentUserUpdateFailed, this, [this](const QString &error) {
+        changeUserDetailsButton->setEnabled(true);
+        QMessageBox::warning(this, "Error", QString("Failed to update profile: %1").arg(error));
+    });
+
 
     // changePassowrdLayout
 

@@ -6,6 +6,8 @@
 #include "user.h"
 #include "todo.h"
 #include "sidemenu.h"
+#include "networkmanager.h"
+#include "maincontent.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -19,17 +21,19 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(Database *db, User *user, Todo *todo, QWidget *parent = nullptr);
+    MainWindow(NetworkManager *net, Database *db, User *user, Todo *todo, QWidget *parent = nullptr);
     ~MainWindow();
 
 private:
     Ui::MainWindow *ui;
 
+    NetworkManager *net;
     Database *db;
     User *user;
     Todo *todo;
 
     SideMenu *sideMenu;
+    MainContent *mainContent;
 
     QString bgColor {"#a6a6a6"}, textColor {"#393e46"};
     QString bgColorDark {"#393e46"}, textColorDark {"#f0ece2"};

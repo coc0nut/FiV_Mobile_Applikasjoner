@@ -63,8 +63,6 @@
     bool Database::checkUserCredentials(QString const &username, QString const &password) {
         QSqlQuery query;
 
-        qDebug() << password;
-
         query.prepare("SELECT id, username, password, name, email FROM users WHERE username = ? AND password = ?");
         query.addBindValue(username);
         query.addBindValue(password);
@@ -154,7 +152,6 @@
                 user->setPassword(query.value("password").toString());
                 user->setName(query.value("name").toString());
                 user->setEmail(query.value("email").toString());
-                qDebug() << "Email: " << user->email();
                 User::users.push_back(user);
             }
             return true;

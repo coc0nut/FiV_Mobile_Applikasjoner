@@ -8,8 +8,8 @@
 #include <QDateTime>
 #include <QMessageBox>
 
-TodoPage::TodoPage(Database *db, User *user, Todo *todo, QWidget *parent)
-: QWidget(parent), db(db), user(user), todo(todo) {
+TodoPage::TodoPage(NetworkManager *net, Database *db, User *user, Todo *todo, QWidget *parent)
+    : QWidget(parent), db(db), user(user), todo(todo), net(net) {
     
     QVBoxLayout *todoLayout = new QVBoxLayout(this);
     todoLayout->setSpacing(1);

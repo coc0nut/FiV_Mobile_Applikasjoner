@@ -9,12 +9,18 @@
 #include <algorithm>
 #include <QDateTime>
 #include <QTextEdit>
+#include <QLocale>
 
 #include <QTimer>
 #include "todo.h"
 
 
-HomePage::HomePage(Database *db, User *user, QWidget *parent) : QWidget{parent}, db(db), user(user) {
+
+HomePage::HomePage(NetworkManager *net, Database *db, User *user, QWidget *parent) : QWidget{parent}, db(db), user(user), net(net) {
+
+    connect(net, &NetworkManager::currentUserUpdated, this, &HomePage::refreshUserDetails);
+    connect(net, &NetworkManager::currentUserFetched, this, &HomePage::refreshUserDetails);
+
 
     contentWidget = new QWidget(this);
     homePageLayout = new QVBoxLayout(contentWidget);
@@ -42,7 +48,16 @@ HomePage::HomePage(Database *db, User *user, QWidget *parent) : QWidget{parent},
         ));
 
 
-        userDetails = new QLabel("Username: " + user->username() + "\nName: " + user->name() + "\nEmail: " + user->email(), contentWidget);
+        userDetails = new QLabel(
+            "Username: " + user->username()
+            + "\nName: " + user->first_name()
+            + " " + user->last_name()
+            + "\nEmail: " + user->email()
+            + "\nLast login: " + user->last_login()
+            + "\nisStaff: " + QString::number(user->getIs_staff())
+            + "\nisActive: " + QString::number(user->getIs_active())
+            + "\nisSuperUser: " + QString::number(user->getIs_superuser())
+            , contentWidget);
 
         QWidget *profileCardWidget = new QWidget(contentWidget);
 
@@ -88,10 +103,6 @@ HomePage::HomePage(Database *db, User *user, QWidget *parent) : QWidget{parent},
         homePageLayout->addWidget(createLine(this));
 
 
-        //homePageLayout->addWidget(createLine(contentWidget));
-
-
-
         // Counter
         auto *counter = new QHBoxLayout();
         counter->setAlignment(Qt::AlignHCenter);
@@ -110,6 +121,19 @@ HomePage::HomePage(Database *db, User *user, QWidget *parent) : QWidget{parent},
 
         homePageLayout->addLayout(counter);
 
+        homePageLayout->addWidget(createLine(this));
+
+        // Calendar
+
+        calendarPanel = new CalendarPanel(contentWidget);
+        calendarPanel->setLocale(QLocale(QLocale::English, QLocale::UnitedStates));
+        calendarPanel->setStyleSheet(QString("background: %1; color: %2; border-radius: 8px;").arg(bgColorDark, textColorDark));
+        calendarPanel->setFixedHeight(420);
+        homePageLayout->addWidget(calendarPanel);
+        connect(calendarPanel, &CalendarPanel::dateSelected, this, [this](const QDate &d){
+            dateFilter = d;
+            refreshTodos();
+        });
         homePageLayout->addWidget(createLine(this));
 
         // Searchtext
@@ -142,6 +166,8 @@ HomePage::HomePage(Database *db, User *user, QWidget *parent) : QWidget{parent},
 
         QScrollArea *scrollArea = new QScrollArea(this);
         scrollArea->setWidgetResizable(true);
+        scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+        scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         scrollArea->setWidget(contentWidget);
         scrollArea->setStyleSheet(
             "QScrollArea { border: none; }"
@@ -154,8 +180,14 @@ HomePage::HomePage(Database *db, User *user, QWidget *parent) : QWidget{parent},
         mainLayout->addWidget(scrollArea);
 }
 
+void HomePage::refreshUserDetails(){
+    userDetails->setText("Username: " + user->username()
+        + "\nName: " + user->first_name() + " " + user->last_name()
+        + "\nEmail: " + user->email());
+}
 
 void HomePage::refreshTodos() {
+
     QLayoutItem *child;
     while ((child = todoLayout->takeAt(0)) != nullptr) {
         if (child->widget()) {
@@ -171,18 +203,18 @@ void HomePage::refreshTodos() {
 
     for (Todo* t: Todo::todos) {
 
-        if (t->user_id() == user->id()) {
+        if (t->user_id() == user->id() ) {
             
-             if (!searchString.isEmpty()) {
-                
+            if (searchString.isEmpty() && QDateTime::fromString(t->due()) < QDateTime::currentDateTime()) {
+                userTodos.append(t);
+
+            } else {
                 if (t->title().contains(searchString, Qt::CaseInsensitive)) {
-                     userTodos.append(t);
+                    userTodos.append(t);
                 } else if (t->text().contains(searchString, Qt::CaseInsensitive)) {
                     userTodos.append(t);
                 }
-                 
-            } else {
-                userTodos.append(t);
+
             }
 
 
@@ -196,12 +228,25 @@ void HomePage::refreshTodos() {
            
         }
     }
-
     std::sort(userTodos.begin(), userTodos.end(), [](Todo *a, Todo *b) {
         QDateTime dueA = QDateTime::fromString(a->due(), Qt::ISODate);
         QDateTime dueB = QDateTime::fromString(b->due(), Qt::ISODate);
         return dueA < dueB;
     });
+
+    if (calendarPanel) {
+        calendarPanel->setTodos(userTodos);
+    }
+
+
+    if (dateFilter.isValid()) {
+        QVector<Todo*> filtered;
+        for (Todo* t : userTodos) {
+            QDate d = QDate::fromString(t->due(), Qt::ISODate);
+            if (d == dateFilter) filtered.append(t);
+        }
+        userTodos = filtered;
+    }
 
     for (int i = 0; i < userTodos.length(); i++) {
         todo = userTodos[i];
@@ -294,14 +339,14 @@ void HomePage::refreshTodos() {
                     "background: %1;"
                     "color: %2;"
                     "font-size: 15px;"
-                    ).arg(bgColorDark, textColorDark)
-                );
+                ).arg(bgColorDark, textColorDark)
+            );
 
 
-            QLabel *created_on = new QLabel("Created: " + createdStr + " | Updated: " + updatedStr, contentWidget);
+            created_on = new QLabel("Created: " + createdStr + " | Updated: " + updatedStr, contentWidget);
             created_on->setStyleSheet("color: #000; font-size: 12px; font-weight: bold;");
 
-            QLabel *due = new QLabel("Due: " + dueStr + " - " + QString::number(daysToDue) + " days left", contentWidget);
+            due = new QLabel("Due: " + dueStr + " - " + QString::number(daysToDue) + " days left", contentWidget);
             due->setStyleSheet(QString("font-weight: bold; background: %1; color: %2; font-size: 15px;").arg(bgColorDark, textColorDark));
 
 
@@ -393,14 +438,6 @@ QFrame *HomePage::createLine(QWidget *parent) {
     line->setFrameShape(QFrame::HLine);
     line->setFrameShadow(QFrame::Sunken);
     return line;
-}
-
-void HomePage::refreshUserDetails()
-{
-    userDetails->setText("Username: " + user->username()
-        + "\nName: " + user->name()
-        + "\nEmail: " + user->email());
-
 }
 
 void HomePage::onSearchTextChanged(const QString &text) {

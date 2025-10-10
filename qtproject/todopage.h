@@ -8,6 +8,7 @@
 #include "database.h"
 #include "todo.h"
 #include "user.h"
+#include "networkmanager.h"
 
 class QTextEdit;
 class QPushButton;
@@ -16,7 +17,7 @@ class TodoPage : public QWidget
 {
     Q_OBJECT
 public:
-    TodoPage(Database *db, User *user, Todo *todo, QWidget *parent = nullptr);
+    TodoPage(NetworkManager *net, Database *db, User *user, Todo *todo, QWidget *parent = nullptr);
 
     void setTodo(Todo *todo);
 
@@ -27,6 +28,7 @@ signals:
     void navigateToHomePage();
 
 private:
+    NetworkManager *net;
     Database *db;
     User *user;
     Todo *todo;
