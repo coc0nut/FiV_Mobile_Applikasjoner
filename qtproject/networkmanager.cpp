@@ -100,6 +100,38 @@ bool NetworkManager::updateCurrentUser(QString const &firstName, QString const &
     return true;
 }
 
+bool NetworkManager::changePassword(QString const &old_password, QString const &new_password, QString const &confirm_password) {
+    if (!m_manager) return false;
+    if (accessToken.isEmpty()) {
+        qDebug() << "changePassword: no access token available";
+        return false;
+    }
+
+    QJsonObject payload
+    payload.insert("old_password", old_password);
+    payload.insert("new_password", new_password);
+    payload.insert("confirm_password", confirm_password);
+
+    QJsonDocument doc(payload);
+    QByteArray body = doc.toJson();
+
+    QUrl apiUrl = m_url.resolved(QUrl(QStringLiteral("me/change-password/")));
+    QNetworkRequest req(apiUrl);
+    req.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/json"));
+
+    if (accessToken.count('.') == 2) {
+        req.setRawHeader("Authorization", QByteArray("Bearer " + accessToken.toUtf8()));
+    } else {
+        req.setRawHeader("Authorization", QByteArray("Token ") + accessToken.toUtf8());
+    }
+
+    QNetworkReply *r = m_manager->post(req, body);
+    if(!r) return false;
+    r->setproperty("requestType", "changePassword");
+    reply = r;
+    return true;
+}
+
 bool NetworkManager::fetchTodos() {
     if (!m_manager) return false;
     if (accessToken.isEmpty()) {
@@ -326,6 +358,8 @@ void NetworkManager::onReplyFinished(QNetworkReply *reply) {
             emit todoUpdateFailed(reply->errorString());
         } else if (requestType == QLatin1String("deleteTodo")) {
             emit todoDeleteFailed(reply->errorString());
+        } else if (requestType == QLatin1String("changePassword")) {
+            emit passwordChangeFailed(reply->errorString());
         }
         reply->deleteLater();
         return;
@@ -441,6 +475,25 @@ void NetworkManager::onReplyFinished(QNetworkReply *reply) {
             emit todoUpdated(todoObj);
         } else {
             emit todoUpdateFailed(QStringLiteral("Expected JSON object but got array"));
+        }
+        reply->deleteLater();
+        return;
+    }
+
+    if (requestType == QLatin1String("changePassword")) {
+        if (doc.isObject()) {
+            QJsonObject responseObj = doc.object();
+
+            if (responseObj.contains("message")) {
+                QString message = responseObj.value("message").toString();
+                qDebug() << "=== NetworkManager: Password changed successfully ===";
+                qDebug() << "Server message:" << message;
+                emit passwordChanged(message);
+            } else {
+                emit passwordChangeFailed(QStringLiteral("Unexpected success response format"));
+            }
+        } else {
+            emit passwordChangeFailed(QStringLiteral("Expected JSON object but got array"));
         }
         reply->deleteLater();
         return;

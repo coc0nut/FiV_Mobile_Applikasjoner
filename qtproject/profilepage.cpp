@@ -182,7 +182,7 @@ ProfilePage::ProfilePage(NetworkManager *net, Database *db, User *user, QWidget 
 
         // Changed Password button
 
-    QPushButton *changePasswordButton = new QPushButton("Set password", this);
+    changePasswordButton = new QPushButton("Set password", this);
     changePasswordButton->setStyleSheet(QString("background: %1; color: %2;").arg(bgColor, textColor));
     changePasswordButton->setFixedHeight(40);
 
@@ -209,31 +209,28 @@ void ProfilePage::onChangePasswordClicked()
     QString oldPassword = oldPasswordEdit->text();
     QString newPassword = newPasswordEdit->text();
     QString confirmPassword = confirmPasswordEdit->text();
-    // qDebug() << oldPassword;
-    QString oldPasswordHashed = db->hashPassword(oldPassword);
-
-    // qDebug() << "old password: " << oldPassword << " | " << oldPasswordHashed;
-    // qDebug() << "Raw password (as hex):" << oldPassword.toUtf8().toHex();
 
     if (newPassword != confirmPassword) {
         QMessageBox::warning(this, "Error", "Password confirmation failed.");
         return;
     }
 
-    QString newPasswordHashed = db->hashPassword(newPassword);
-    // qDebug() << "new password: " << newPassword << " | " << newPasswordHashed;
-
     if (oldPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
-        QMessageBox::warning(this, "Error", "All fields must be populated.");
+        QMessageBox::warning(this, "Error", "All password fields must be populated.");
         return;
     }
 
+    changePasswordButton->setEnabled(false);
+    changePasswordButton->setText("Changing password");
    
-    if (!db->checkUserCredentials(user->username(), oldPasswordHashed)) {
+    if (!net->changePassword(oldPassword, newPassword, confirmPassword)) {
         QMessageBox::warning(this, "Error", "Wrong current password");
+        changePasswordButton->setEnabled(true);
+        changePasswordButton->setText("Set password");
         return;
+    } else {
+        changePasswordButton->setEnabled(true);
+        changePasswordButton->setText("Set password");
     }
-    user->setPassword(newPasswordHashed);
-    db->updateUser(user);
-    // Optionally, show success message
+
 }

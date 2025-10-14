@@ -20,6 +20,7 @@ public:
     
     bool fetchCurrentUser();
     bool updateCurrentUser(QString const &firstName, QString const &lastName, QString const &email);
+    bool changePassowrd(QString const &old_password, QString const &new_password, QString const &confirm_password);
     
     void setUrl(QUrl const &url) { m_url = url; }
     QUrl getUrl() { return m_url; }
@@ -48,6 +49,8 @@ signals:
 
     void currentUserUpdated(const QJsonObject &userObj);
     void currentUserUpdateFailed(const QString &error);
+    void passwordChanged(const QString &message);
+    void passwordChangeFailed(const QString &error);
 
     void todosFetched(QJsonArray const &todosArray);
     void todosFetchFailed(QString const &error);
