@@ -23,6 +23,12 @@ public:
     
     void setUrl(QUrl const &url) { m_url = url; }
     QUrl getUrl() { return m_url; }
+
+    bool fetchTodos();
+    bool createTodo(QString const &title, QString const &text, bool completed, QString const &due);
+    bool updateTodo(int todoId, QString const &title, QString const &text, bool completed, QString const &due);
+    bool deleteTodo(int todoId);
+    
     
     QString getAccessToken() const;
     void setAccessToken(const QString &newAccessToken);
@@ -42,6 +48,16 @@ signals:
 
     void currentUserUpdated(const QJsonObject &userObj);
     void currentUserUpdateFailed(const QString &error);
+
+    void todosFetched(QJsonArray const &todosArray);
+    void todosFetchFailed(QString const &error);
+
+    void todoCreated(QJsonObject const &todoObj);
+    void todoCreateFailed(QString const &error);
+    void todoUpdated(QJsonObject const &todoObj);
+    void todoUpdateFailed(QString const &error);
+    void todoDeleted(int todoId);
+    void todoDeleteFailed(QString const &error);
 
 private slots:
     void onReplyFinished(QNetworkReply *reply);

@@ -54,7 +54,7 @@ private:
     QLineEdit *searchTextEdit;
 
     // profile
-    QLabel *userDetails, *bilde;
+    QLabel *userDetails, *permissions, *bilde;
 
     // Todo
     QLabel *title, *text, *created_on, *updated_on, *due;

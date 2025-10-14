@@ -64,16 +64,25 @@ class TodoViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        """Return todos for the authenticated user (staff can see all)"""
         user = self.request.user
         if user.is_staff:
             return Todo.objects.all()
         return Todo.objects.filter(user=user)
     
     def perform_create(self, serializer):
+        """Automatically assign the authenticated user when creating"""
         serializer.save(user=self.request.user)
 
     def perform_update(self, serializer):
+        """Ensure users can only update their own todos"""
         instance = self.get_object()
         if not (self.request.user.is_staff or instance.user == self.request.user):
                 raise PermissionDenied("Cannot modify others todos")
         serializer.save()
+
+    def perform_destroy(self, instance):
+        """Ensure users can only delete their own todos"""
+        if not (self.request.user.is_staff or instance.user == self.request.user):
+            raise PermissionDenied("Cannot delete other users todos")
+        instance.delete()

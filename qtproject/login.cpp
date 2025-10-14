@@ -89,6 +89,8 @@ void Login::onLoginSucceeded(const QString &access, const QString &refresh, int 
     disconnect(net, &NetworkManager::loginFailed, this, &Login::onLoginFailed);
 
     net->fetchCurrentUser();
+    net->fetchTodos();
+
 
     QMessageBox::information(this, "Login", "Login successful.");
     accept();

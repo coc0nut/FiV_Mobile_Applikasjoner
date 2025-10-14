@@ -54,10 +54,13 @@ HomePage::HomePage(NetworkManager *net, Database *db, User *user, QWidget *paren
             + " " + user->last_name()
             + "\nEmail: " + user->email()
             + "\nLast login: " + user->last_login()
-            + "\nisStaff: " + QString::number(user->getIs_staff())
+        , contentWidget);
+
+        permissions = new QLabel(
+            "isStaff: " + QString::number(user->getIs_staff())
             + "\nisActive: " + QString::number(user->getIs_active())
             + "\nisSuperUser: " + QString::number(user->getIs_superuser())
-            , contentWidget);
+        , contentWidget);
 
         QWidget *profileCardWidget = new QWidget(contentWidget);
 
@@ -78,7 +81,10 @@ HomePage::HomePage(NetworkManager *net, Database *db, User *user, QWidget *paren
 
         profileCardLayout->addWidget(bilde, 0);
 
+        QHBoxLayout *profileTextLayout = new QHBoxLayout();
 
+        profileTextLayout->addWidget(userDetails);
+        profileTextLayout->addWidget(permissions);
 
         QVBoxLayout *profileDetailsLayout = new QVBoxLayout();
 
@@ -86,7 +92,8 @@ HomePage::HomePage(NetworkManager *net, Database *db, User *user, QWidget *paren
         profileDetailsLayout->setSpacing(1);
         profileDetailsLayout->setContentsMargins(0, 12, 0, 0);
 
-        profileDetailsLayout->addWidget(userDetails);
+        profileDetailsLayout->addLayout(profileTextLayout);
+
 
         QWidget *profileDetailsWidget = new QWidget(contentWidget);
         profileDetailsWidget->setStyleSheet(
@@ -178,6 +185,7 @@ HomePage::HomePage(NetworkManager *net, Database *db, User *user, QWidget *paren
 
         QVBoxLayout *mainLayout = new QVBoxLayout(this);
         mainLayout->addWidget(scrollArea);
+
 }
 
 void HomePage::refreshUserDetails(){
@@ -187,6 +195,8 @@ void HomePage::refreshUserDetails(){
 }
 
 void HomePage::refreshTodos() {
+    qDebug() << "=== HomePage::refreshTodos() called ===";
+    qDebug() << "Current Todo::todos.size():" << Todo::todos.size();
 
     QLayoutItem *child;
     while ((child = todoLayout->takeAt(0)) != nullptr) {
@@ -378,10 +388,25 @@ void HomePage::refreshTodos() {
                     .arg(btnBgColor, btnTextColor)
                 );
 
-            connect(completeButton, &QPushButton::clicked, this, [this]() {
-                this->todo->setCompleted(1);
-                db->updateTodo(todo);
-                refreshTodos();
+            connect(completeButton, &QPushButton::clicked, this, [this, todoId]() {
+                Todo* todoToComplete = nullptr;
+                for (Todo* t : Todo::todos) {
+                    if (t->id() == todoId) {
+                        todoToComplete = t;
+                        break;
+                    }
+                }
+                
+                if (!todoToComplete || !net) return;
+                
+                net->updateTodo(
+                    todoToComplete->id(),
+                    todoToComplete->title(),
+                    todoToComplete->text(),
+                    true, // Mark as completed
+                    todoToComplete->due()
+                );
+                
             });
 
             todoButtons->addWidget(editButton);
@@ -417,6 +442,7 @@ void HomePage::refreshTodos() {
         totalCounts->setText("Total todos: " + QString::number(totalCount));
 
     }
+    qDebug() << "=== HomePage::refreshTodos() completed ===";
 
 }
 

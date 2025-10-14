@@ -2,6 +2,7 @@ from django.contrib.auth.models import Group, User
 
 from rest_framework import serializers
 
+from .models import Todo
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.IntegerField(read_only=True)
     class Meta:
@@ -23,8 +24,10 @@ from .models import Todo
 class TodoSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.IntegerField(read_only=True)
     url = serializers.HyperlinkedIdentityField(view_name='todo-detail', read_only=True)
-    user_id = serializers.IntegerField(read_only=True)
+    user = serializers.HyperlinkedRelatedField(view_name='user-detail', read_only=True)
+    user_id = serializers.IntegerField(source='user.id', read_only=True)
 
     class Meta:
         model = Todo
-        fields = ['id', 'user_id', 'title', 'text', 'completed', 'created_on', 'updated_on', 'due', 'url']
+        fields = ['id', 'url', 'user', 'user_id', 'title', 'text', 'completed', 'created_on', 'updated_on', 'due']
+        read_only_fields = ['created_on', 'updated_on']

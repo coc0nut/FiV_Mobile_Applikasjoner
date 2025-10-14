@@ -2,6 +2,7 @@
 
 
 #include <QWidget>
+#include <QDebug>
 
 MainContent::MainContent(NetworkManager *net, Database *db, User *user, Todo *todo, SideMenu *sideMenu, QWidget *parent)
     : QStackedWidget{parent}, db(db), user(user), todo(todo), sideMenu(sideMenu), net(net)
@@ -20,9 +21,17 @@ MainContent::MainContent(NetworkManager *net, Database *db, User *user, Todo *to
 
     // forward signal todo change signal maincontent -> mainwindow
     connect(m_todoPage, SIGNAL(todosChanged()), this, SIGNAL(todosChanged()));
-    connect(m_todoPage, SIGNAL(navigateToHomePage()), this, SLOT(showHomePage()));
-
+    connect(m_todoPage, &TodoPage::navigateToHomePage, this, &MainContent::showHomePage);
     connect(m_profilePage, &ProfilePage::userDetailsChanged, m_homePage, &HomePage::refreshUserDetails);
+
+    connect(net, &NetworkManager::todoCreated, m_homePage, &HomePage::refreshTodos);
+    connect(net, &NetworkManager::todoUpdated, m_homePage, &HomePage::refreshTodos);
+    connect(net, &NetworkManager::todoDeleted, m_homePage, &HomePage::refreshTodos);
+    connect(net, &NetworkManager::todosFetched, m_homePage, &HomePage::refreshTodos);
+
+    connect(net, &NetworkManager::todoDeleted, [](int todoId) {
+        qDebug() << "MainContent: Received todoDeleted signal for ID:" << todoId;
+    });
 }
 
 QWidget* MainContent::homePage() { return m_homePage; }
@@ -54,4 +63,5 @@ void MainContent::showHomePage() {
     if (sideMenu) {
         sideMenu->setCurrentItemByName("Home");
     }
+    emit todosChanged();
 }
