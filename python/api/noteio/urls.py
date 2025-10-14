@@ -8,12 +8,9 @@ router = routers.DefaultRouter()
 router.register(r'users', UserViewSet, basename='user')
 router.register(r'groups', GroupViewSet, basename='group')
 router.register(r'todos', TodoViewSet, basename='todo')
+router.register(r'me', CurrentUserView, basename='current-user')
 
 urlpatterns = [
     path('', include(router.urls)),
-    path(
-        'me/', 
-        CurrentUserView.as_view({'get': 'list', 'put': 'update', 'patch': 'partial_update'}), 
-        name='current-user'
-    ),
+
 ]

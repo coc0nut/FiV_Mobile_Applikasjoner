@@ -107,7 +107,7 @@ bool NetworkManager::changePassword(QString const &old_password, QString const &
         return false;
     }
 
-    QJsonObject payload
+    QJsonObject payload;
     payload.insert("old_password", old_password);
     payload.insert("new_password", new_password);
     payload.insert("confirm_password", confirm_password);
@@ -127,7 +127,7 @@ bool NetworkManager::changePassword(QString const &old_password, QString const &
 
     QNetworkReply *r = m_manager->post(req, body);
     if(!r) return false;
-    r->setproperty("requestType", "changePassword");
+    r->setProperty("requestType", "changePassword");
     reply = r;
     return true;
 }

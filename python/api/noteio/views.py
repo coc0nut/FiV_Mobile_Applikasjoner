@@ -32,7 +32,7 @@ class CurrentUserView(viewsets.ViewSet):
 
         if not update_data:
             return Response(
-                {'error', 'No valid fields to update. Allowed: email, first_name, last_name'},
+                {'error': 'No valid fields to update. Allowed: email, first_name, last_name'},
                 status=status.HTTP_400_BAD_REQUEST
             )
         

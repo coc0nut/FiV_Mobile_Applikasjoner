@@ -128,6 +128,26 @@ ProfilePage::ProfilePage(NetworkManager *net, Database *db, User *user, QWidget 
         QMessageBox::warning(this, "Error", QString("Failed to update profile: %1").arg(error));
     });
 
+    connect(net, &NetworkManager::passwordChanged, this, [this](const QString &message) {
+        changePasswordButton->setEnabled(true);
+        changePasswordButton->setText("Set password");
+
+        oldPasswordEdit->clear();
+        newPasswordEdit->clear();
+        confirmPasswordEdit->clear();
+
+        QMessageBox::information(this, "Success", "Password changed successfully!");
+        qDebug() << "ProfilePage: Password changed successfully:" << message;
+    });
+
+    connect(net, &NetworkManager::passwordChangeFailed, this, [this](const QString &error) {
+        changePasswordButton->setEnabled(true);
+        changePasswordButton->setText("Set password");
+
+        QMessageBox::warning(this, "Error", QString("Failed to change password: %1").arg(error));
+        qDebug() << "ProfilePage: Password change failed:" << error;
+    });
+
 
     // changePassowrdLayout
 
@@ -225,12 +245,7 @@ void ProfilePage::onChangePasswordClicked()
    
     if (!net->changePassword(oldPassword, newPassword, confirmPassword)) {
         QMessageBox::warning(this, "Error", "Wrong current password");
-        changePasswordButton->setEnabled(true);
-        changePasswordButton->setText("Set password");
         return;
-    } else {
-        changePasswordButton->setEnabled(true);
-        changePasswordButton->setText("Set password");
     }
 
 }
