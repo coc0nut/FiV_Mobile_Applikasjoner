@@ -17,8 +17,8 @@ CalendarPanel::CalendarPanel(QWidget *parent) : QWidget(parent) {
     );
     calendar_->setGridVisible(true);
     calendar_->setVerticalHeaderFormat(QCalendarWidget::NoVerticalHeader);
-    calendar_->setFixedWidth(800);
-    calendar_->setFixedHeight(400);
+    calendar_->setFixedWidth(300);
+    calendar_->setFixedHeight(300);
     calendar_->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     QTextCharFormat headerFmt;
@@ -44,18 +44,17 @@ CalendarPanel::CalendarPanel(QWidget *parent) : QWidget(parent) {
     }
 
     events_ = new QListWidget(this);
-    events_->setFixedHeight(400);
-    events_->setMinimumWidth(200);
-    events_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    events_->setUniformItemSizes(true); 
-    events_->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    events_->setFixedHeight(300);
+    events_->setFixedWidth(300);
+    events_->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    events_->setUniformItemSizes(true);
 
-    auto *lay = new QHBoxLayout(this);
+
+    auto *lay = new QVBoxLayout(this);
     lay->setContentsMargins(0,0,0,0);
     lay->setSpacing(12);
     lay->addWidget(calendar_, 0);
     lay->addWidget(events_, 1);
-    this->setFixedHeight(420);
 
     connect(calendar_, &QCalendarWidget::selectionChanged, this, &CalendarPanel::onSelectionChanged);
     updateEventList(calendar_->selectedDate());

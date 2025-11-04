@@ -68,7 +68,7 @@ private slots:
 
 
 private:
-    QUrl m_url = QUrl(QStringLiteral("http://127.0.0.1:8000"));
+    QUrl m_url;
     QNetworkAccessManager *m_manager = nullptr;
     QNetworkReply *reply = nullptr;
     QString accessToken, refreshToken;

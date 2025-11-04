@@ -13,7 +13,6 @@ SideMenu::SideMenu(QWidget *parent) : QTreeWidget(parent) {
         "}"
     );
 
-
     homeItem = new QTreeWidgetItem(this, QStringList("Home"));
     todoItem = new QTreeWidgetItem(this, QStringList("Todo"));
     settingsItem = new QTreeWidgetItem(this, QStringList("Settings"));

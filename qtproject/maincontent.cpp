@@ -12,26 +12,26 @@ MainContent::MainContent(NetworkManager *net, Database *db, User *user, Todo *to
     m_settingsPage = new QWidget(this);
     m_todoPage = new TodoPage(net, db, user, todo, this);
 
-
-
     addWidget(m_homePage);
     addWidget(m_profilePage);
     addWidget(m_settingsPage);
     addWidget(m_todoPage);
 
-    // forward signal todo change signal maincontent -> mainwindow
-    connect(m_todoPage, SIGNAL(todosChanged()), this, SIGNAL(todosChanged()));
+    // forward signal todo change signal  (todopage -> maincontent -> mainwindow -> sidemenu)
+    connect(m_todoPage, &TodoPage::todosChanged, this, &MainContent::todosChanged);
+
+    // forward signal navigate to homepage (todoPage -> MainContent::showHomePage())
     connect(m_todoPage, &TodoPage::navigateToHomePage, this, &MainContent::showHomePage);
+
+    // forward signal changed user details (profilepage -> maincontent -> HomePage::refreshUserDetails())
     connect(m_profilePage, &ProfilePage::userDetailsChanged, m_homePage, &HomePage::refreshUserDetails);
 
+    // signals for todos
     connect(net, &NetworkManager::todoCreated, m_homePage, &HomePage::refreshTodos);
     connect(net, &NetworkManager::todoUpdated, m_homePage, &HomePage::refreshTodos);
     connect(net, &NetworkManager::todoDeleted, m_homePage, &HomePage::refreshTodos);
     connect(net, &NetworkManager::todosFetched, m_homePage, &HomePage::refreshTodos);
 
-    connect(net, &NetworkManager::todoDeleted, [](int todoId) {
-        qDebug() << "MainContent: Received todoDeleted signal for ID:" << todoId;
-    });
 }
 
 QWidget* MainContent::homePage() { return m_homePage; }
@@ -43,7 +43,7 @@ void MainContent::showTodoPage(int todoId)
 {
     Todo* todoToEdit = nullptr;
 
-    for (Todo* t: Todo::todos) {
+    for (Todo* const t: Todo::todos) {
         if (t->id() == todoId) {
             todoToEdit = t;
             sideMenu->setCurrentItemByName(t->title());

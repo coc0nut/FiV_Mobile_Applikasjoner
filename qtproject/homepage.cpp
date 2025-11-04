@@ -16,176 +16,166 @@
 
 
 
-HomePage::HomePage(NetworkManager *net, Database *db, User *user, QWidget *parent) : QWidget{parent}, db(db), user(user), net(net) {
+HomePage::HomePage(NetworkManager *net, Database *db, User *user, QWidget *parent)
+    : QWidget{parent}, db(db), user(user), net(net) {
 
     connect(net, &NetworkManager::currentUserUpdated, this, &HomePage::refreshUserDetails);
     connect(net, &NetworkManager::currentUserFetched, this, &HomePage::refreshUserDetails);
 
+    // Main layout
+    QHBoxLayout *mainLayout = new QHBoxLayout(this);
+    mainLayout->setSpacing(10);
 
-    contentWidget = new QWidget(this);
-    homePageLayout = new QVBoxLayout(contentWidget);
+    // Center widget
+    QWidget *centerWidget = new QWidget();
+    
+    // Center layout (profile card + todos) - now inside centerWidget
+    QVBoxLayout *centerLayout = new QVBoxLayout(centerWidget);
+    centerLayout->setAlignment(Qt::AlignTop);
+    centerLayout->setSpacing(20);
+    centerLayout->setContentsMargins(8, 8, 8, 8);
 
-    QLabel *header = new QLabel("Home", this);
-    header->setStyleSheet(QString("font-weight: bold; font-size: 46px;"));
-    homePageLayout->addWidget(header);
-
-    homePageLayout->setAlignment(Qt::AlignTop);
-    homePageLayout->setSpacing(20);
-    homePageLayout->setContentsMargins(8, 8, 8, 8);
-
-
+    // Header
+    QLabel *header = new QLabel("Home", centerWidget);
+    header->setStyleSheet("font-weight: bold; font-size: 46px;");
+    centerLayout->addWidget(header);
 
     // Profile Card
+    QPixmap profile_pic(":pictures/monkey.jpg");
+    bilde = new QLabel(centerWidget);  // CHANGED: parent to centerWidget
+    bilde->setFixedSize(150, 150);
+    bilde->setAlignment(Qt::AlignCenter);
+    bilde->setPixmap(profile_pic.scaled(
+        bilde->size(),
+        Qt::KeepAspectRatioByExpanding,
+        Qt::SmoothTransformation
+    ));
 
-        QPixmap profile_pic(":pictures/monkey.jpg");
-        bilde = new QLabel(contentWidget);
-        bilde->setFixedSize(150, 150);
-        bilde->setAlignment(Qt::AlignCenter);
-        bilde->setPixmap(profile_pic.scaled(
-            bilde->size(),
-            Qt::KeepAspectRatioByExpanding,
-            Qt::SmoothTransformation
-        ));
+    userDetails = new QLabel(
+        "Profile:\n"
+        "Username: " + user->username()
+        + "\nName: " + user->first_name()
+        + " " + user->last_name()
+        + "\nEmail: " + user->email()
+        + "\nLast login: " + QDateTime::fromString(user->last_login(), Qt::ISODate).toString("dd.MM.yyyy HH:mm"),
+        centerWidget
+    );
 
+    permissions = new QLabel(
+        "Roles:\n"
+        "isStaff: " + QString::number(user->getIs_staff())
+        + "\nisActive: " + QString::number(user->getIs_active())
+        + "\nisSuperUser: " + QString::number(user->getIs_superuser()),
+        centerWidget
+    );
 
-        userDetails = new QLabel(
-            "Username: " + user->username()
-            + "\nName: " + user->first_name()
-            + " " + user->last_name()
-            + "\nEmail: " + user->email()
-            + "\nLast login: " + user->last_login()
-        , contentWidget);
+    QWidget *profileCardWidget = new QWidget(centerWidget); 
+    QHBoxLayout *profileCardLayout = new QHBoxLayout(profileCardWidget);
+    profileCardLayout->setAlignment(Qt::AlignVCenter);
+    profileCardWidget->setLayout(profileCardLayout);
+    profileCardWidget->setStyleSheet(
+        QString(
+            "background: %1;"
+            "border-radius: 12px;"
+            "padding: 12px;"
+            "color: %2;"
+        ).arg(bgColorDark, textColorDark)
+    );
 
-        permissions = new QLabel(
-            "isStaff: " + QString::number(user->getIs_staff())
-            + "\nisActive: " + QString::number(user->getIs_active())
-            + "\nisSuperUser: " + QString::number(user->getIs_superuser())
-        , contentWidget);
+    profileCardLayout->addWidget(bilde, 0);
 
-        QWidget *profileCardWidget = new QWidget(contentWidget);
+    QHBoxLayout *profileTextLayout = new QHBoxLayout();
+    profileTextLayout->setAlignment(Qt::AlignTop);
+    profileTextLayout->setSpacing(8);
+    profileTextLayout->addWidget(userDetails);
+    profileTextLayout->addWidget(permissions);
 
-        QHBoxLayout *profileCardLayout = new QHBoxLayout();
+    QHBoxLayout *profileDetailsLayout = new QHBoxLayout();
+    profileDetailsLayout->setAlignment(Qt::AlignTop);
+    profileDetailsLayout->setSpacing(20);
+    profileDetailsLayout->setContentsMargins(0, 12, 0, 0);
+    profileDetailsLayout->addLayout(profileTextLayout);
 
-        profileCardLayout->setAlignment(Qt::AlignVCenter);
+    QWidget *profileDetailsWidget = new QWidget(centerWidget);
+    profileDetailsWidget->setStyleSheet(
+        "background: transparent;"
+        "border-radius: 8px;"
+        "padding: 2px;"
+        "margin-bottom: 12px;"
+    );
+    profileDetailsWidget->setLayout(profileDetailsLayout);
+    profileCardLayout->addWidget(profileDetailsWidget, 1);
 
-        profileCardWidget->setLayout(profileCardLayout);
-        profileCardWidget->setStyleSheet(
-            QString(
-                "background: %1;"
-                "border-radius: 12px;"
-                "padding: 12px;"
-                "color: %2;"
+    centerLayout->addWidget(profileCardWidget);
+    centerLayout->addWidget(createLine(centerWidget));
 
-                ).arg(bgColorDark, textColorDark)
-            );
+    // Counter
+    QHBoxLayout *counter = new QHBoxLayout();
+    counter->setAlignment(Qt::AlignHCenter);
+    counter->setSpacing(500);
 
-        profileCardLayout->addWidget(bilde, 0);
+    completedCounts = new QLabel("Completed todos: " + QString::number(completedCount), centerWidget);
+    activeCounts = new QLabel("Active todos: " + QString::number(activeCount), centerWidget);
+    totalCounts = new QLabel("Total todos: " + QString::number(totalCount), centerWidget);
+    completedCounts->setObjectName("counterLabel");
+    activeCounts->setObjectName("counterLabel");
+    totalCounts->setObjectName("counterLabel");
 
-        QHBoxLayout *profileTextLayout = new QHBoxLayout();
+    counter->addWidget(activeCounts);
+    counter->addWidget(completedCounts);
+    counter->addWidget(totalCounts);
 
-        profileTextLayout->addWidget(userDetails);
-        profileTextLayout->addWidget(permissions);
+    centerLayout->addLayout(counter);
+    centerLayout->addWidget(createLine(centerWidget));
 
-        QVBoxLayout *profileDetailsLayout = new QVBoxLayout();
+    // Search bar
+    QHBoxLayout *searchTextLayout = new QHBoxLayout();
+    searchTextLayout->setAlignment(Qt::AlignLeft);
 
-        profileDetailsLayout->setAlignment(Qt::AlignTop);
-        profileDetailsLayout->setSpacing(1);
-        profileDetailsLayout->setContentsMargins(0, 12, 0, 0);
+    searchTextEdit = new QLineEdit(centerWidget);
+    searchTextEdit->setFixedWidth(350);
+    searchTextEdit->setObjectName("searchTextEdit");
+    searchTextEdit->setPlaceholderText("Search todos");
+    searchTextEdit->setStyleSheet(QString("background: %1; color: %2; border-radius: 8px; border: none;").arg(bgColorDark, textColorDark));
 
-        profileDetailsLayout->addLayout(profileTextLayout);
+    connect(searchTextEdit, &QLineEdit::textChanged, this, &HomePage::onSearchTextChanged);
 
-
-        QWidget *profileDetailsWidget = new QWidget(contentWidget);
-        profileDetailsWidget->setStyleSheet(
-            "background: transparent;"
-            "border-radius: 8px;"
-            "padding: 2px;"
-            "margin-bottom: 12px;"
-        );
-
-        profileDetailsWidget->setLayout(profileDetailsLayout);
-        profileCardLayout->addWidget(profileDetailsWidget, 1);
-
-        homePageLayout->addWidget(profileCardWidget);
-        homePageLayout->addWidget(createLine(this));
-
-
-        // Counter
-        auto *counter = new QHBoxLayout();
-        counter->setAlignment(Qt::AlignHCenter);
-        counter->setSpacing(500);
-
-        completedCounts = new QLabel("Completed todos: " + QString::number(completedCount));
-        activeCounts = new QLabel("Active todos: " + QString::number(activeCount));
-        totalCounts = new QLabel("Total todos: " + QString::number(totalCount));
-        completedCounts->setObjectName("counterLabel");
-        activeCounts->setObjectName("counterLabel");
-        totalCounts->setObjectName("counterLabel");
-
-        counter->addWidget(activeCounts);
-        counter->addWidget(completedCounts);
-        counter->addWidget(totalCounts);
-
-        homePageLayout->addLayout(counter);
-
-        homePageLayout->addWidget(createLine(this));
-
-        // Calendar
-
-        calendarPanel = new CalendarPanel(contentWidget);
-        calendarPanel->setLocale(QLocale(QLocale::English, QLocale::UnitedStates));
-        calendarPanel->setStyleSheet(QString("background: %1; color: %2; border-radius: 8px;").arg(bgColorDark, textColorDark));
-        calendarPanel->setFixedHeight(420);
-        homePageLayout->addWidget(calendarPanel);
-        connect(calendarPanel, &CalendarPanel::dateSelected, this, [this](const QDate &d){
-            dateFilter = d;
-            refreshTodos();
-        });
-        homePageLayout->addWidget(createLine(this));
-
-        // Searchtext
-        auto *searchTextLayout = new QHBoxLayout();
-        searchTextLayout->setAlignment(Qt::AlignLeft);
-
-        searchTextEdit = new QLineEdit();
-        searchTextEdit->setFixedWidth(350);
-        searchTextEdit->setObjectName("searchTextEdit");
-        searchTextEdit->setPlaceholderText("Search todos");
-        searchTextEdit->setStyleSheet(QString("background: %1; color: %2; border-radius: 8px; border: none;").arg(bgColorDark, textColorDark));
-        //searchTextEdit->setStyleSheet(QString("background: %1; color: %2; border-radius: 8px; border: none;").arg(bgColorDark, textColorDark));
-
-        connect(searchTextEdit, &QLineEdit::textChanged, this, &HomePage::onSearchTextChanged);
-
-        searchTextLayout->addWidget(searchTextEdit);
-        homePageLayout->addLayout(searchTextLayout);
+    searchTextLayout->addWidget(searchTextEdit);
+    centerLayout->addLayout(searchTextLayout);
 
     // Todos Layout
-        todoLayout = new QVBoxLayout();
-        todoLayout->setSpacing(20);
-        homePageLayout->addLayout(todoLayout);
+    todoLayout = new QVBoxLayout();
+    todoLayout->setSpacing(20);
+    centerLayout->addLayout(todoLayout);
 
+    // create a scroll area for center content
+    QScrollArea *scrollArea = new QScrollArea(this);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scrollArea->setWidget(centerWidget);
+    scrollArea->setStyleSheet(
+        "QScrollArea { border: none; }"
+        "QScrollBar { border: none; }"
+        "QScrollArea > QWidget { border: none; }"
+    );
 
+    mainLayout->addWidget(scrollArea, 1);  // Stretch factor 1
 
+    // Calendar Panel (Right Section)
+    calendarPanel = new CalendarPanel(this);
+    calendarPanel->setLocale(QLocale(QLocale::English, QLocale::UnitedStates));
+    calendarPanel->setStyleSheet(QString("background: %1; color: %2; border-radius: 8px;").arg(bgColorDark, textColorDark));
+
+    connect(calendarPanel, &CalendarPanel::dateSelected, this, [this](const QDate &d) {
+        dateFilter = d;
         refreshTodos();
-        
+    });
 
-        contentWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    mainLayout->addWidget(calendarPanel, 0, Qt::AlignTop);
 
-        QScrollArea *scrollArea = new QScrollArea(this);
-        scrollArea->setWidgetResizable(true);
-        scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-        scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        scrollArea->setWidget(contentWidget);
-        scrollArea->setStyleSheet(
-            "QScrollArea { border: none; }"
-            "QScrollBar { border: none; }"
-            "QScrollArea > QWidget { border: none; }"
-        );
-
-
-        QVBoxLayout *mainLayout = new QVBoxLayout(this);
-        mainLayout->addWidget(scrollArea);
-
+    // Initialize
+    refreshTodos();
 }
 
 void HomePage::refreshUserDetails(){
@@ -214,7 +204,7 @@ void HomePage::refreshTodos() {
     for (Todo* t: Todo::todos) {
 
         if (t->user_id() == user->id() ) {
-            
+
             if (searchString.isEmpty() && QDateTime::fromString(t->due()) < QDateTime::currentDateTime()) {
                 userTodos.append(t);
 
@@ -227,7 +217,6 @@ void HomePage::refreshTodos() {
 
             }
 
-
             if (t->completed()) {
                 completedCount++;
             } else {
@@ -235,7 +224,7 @@ void HomePage::refreshTodos() {
             }
             totalCount++;
 
-           
+
         }
     }
     std::sort(userTodos.begin(), userTodos.end(), [](Todo *a, Todo *b) {
@@ -335,12 +324,12 @@ void HomePage::refreshTodos() {
             text->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
             text->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-            
+
             QTextDocument *doc = text->document();
-            doc->setTextWidth(300); 
+            doc->setTextWidth(300);
             int contentHeight = doc->size().height();
 
-            
+
             int desiredHeight = qMax(100, qMin(300, contentHeight + 30));
             text->setFixedHeight(desiredHeight);
 
@@ -365,6 +354,7 @@ void HomePage::refreshTodos() {
             int buttonHeight = 45;
             editButton = new QPushButton("Edit", this);
             editButton->setFixedHeight(buttonHeight);
+            editButton->setFixedWidth(200);
             editButton->setStyleSheet(
                 QString(
                     "background: %1;"
@@ -380,6 +370,7 @@ void HomePage::refreshTodos() {
 
             completeButton = new QPushButton("Complete", this);
             completeButton->setFixedHeight(buttonHeight);
+            completeButton->setFixedWidth(200);
             completeButton->setStyleSheet(
                 QString(
                     "background: %1;"
@@ -396,9 +387,9 @@ void HomePage::refreshTodos() {
                         break;
                     }
                 }
-                
+
                 if (!todoToComplete || !net) return;
-                
+
                 net->updateTodo(
                     todoToComplete->id(),
                     todoToComplete->title(),
@@ -406,7 +397,7 @@ void HomePage::refreshTodos() {
                     true, // Mark as completed
                     todoToComplete->due()
                 );
-                
+
             });
 
             todoButtons->addWidget(editButton);

@@ -54,8 +54,6 @@ MainWindow::MainWindow(NetworkManager *net, Database *db, User *user, Todo *todo
                 "background: %1;"
                 "color: %2;"
             ).arg(bgColor, textColor)
-
-
         );
 
         QHBoxLayout *mainLayout = new QHBoxLayout(central);
@@ -118,8 +116,6 @@ MainWindow::MainWindow(NetworkManager *net, Database *db, User *user, Todo *todo
             // Profile page
             else if (current == this->sideMenu->profileItem) {
                 mainContent->setCurrentIndex(1);
-
-
             }
             // Settings Page
             else if (current == this->sideMenu->settingsItem || current->parent() == this->sideMenu->settingsItem) {

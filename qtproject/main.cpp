@@ -42,6 +42,7 @@ int main(int argc, char *argv[])
     // }
     
     NetworkManager net(&user, &todo);
+    net.setUrl(QUrl(QStringLiteral("http://127.0.0.1:8000")));
 
     Login login(&net, &database, &user);
     if (login.exec() == QDialog::Accepted) {
