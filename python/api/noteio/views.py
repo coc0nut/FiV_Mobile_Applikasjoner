@@ -44,7 +44,7 @@ class CurrentUserView(viewsets.ViewSet):
      
      def partial_update(self, request, pk=None):
          """
-         Allow put request
+         Allow PATCH request
          """
          return self.update(request, pk)
      

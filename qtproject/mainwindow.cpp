@@ -21,8 +21,6 @@ MainWindow::MainWindow(NetworkManager *net, Database *db, User *user, Todo *todo
     ui->setupUi(this);
     newTodo = new Todo(this);
 
-
-
     // Top menu bar
         QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
 
